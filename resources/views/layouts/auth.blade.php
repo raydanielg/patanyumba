@@ -7,7 +7,7 @@
 
     <title>@yield('title', config('app.name', 'Patanyumba'))</title>
 
-    <meta name="theme-color" content="#001816">
+    <meta name="theme-color" content="#075E54">
     <meta property="og:title" content="{{ config('app.name', 'Patanyumba') }}">
     <meta property="og:description" content="Find. Rent. Move In.">
     <meta property="og:type" content="website">
@@ -27,7 +27,7 @@
         @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
         @keyframes pulseGlow { 0%,100% { opacity:0.4; } 50% { opacity:0.7; } }
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .ajax-loader { position:fixed; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, #024938, #f9ac00, #024938); background-size: 200% 100%; animation: ajaxProgress 1s linear infinite; z-index:9999; display:none; }
+        .ajax-loader { position:fixed; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, #075E54, #25D366, #075E54); background-size: 200% 100%; animation: ajaxProgress 1s linear infinite; z-index:9999; display:none; }
         @keyframes ajaxProgress { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
         .page-transition { animation: simpleFadeIn 0.35s ease-out both; }
         .float-text { animation: floatText 4s ease-in-out infinite; }
@@ -37,7 +37,7 @@
         .slide-up-delay-3 { animation: slideUp 0.6s ease-out 0.45s both; }
         .pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
         .animated-gradient {
-            background: linear-gradient(135deg, #001816, #01241f, #013028, #024938, #013028, #01241f);
+            background: linear-gradient(135deg, #032e2b, #054540, #075E54, #128C7E, #075E54, #054540);
             background-size: 400% 400%;
             animation: gradientShift 8s ease infinite;
         }
@@ -47,8 +47,8 @@
             theme: {
                 extend: {
                     colors: {
-                        emerald: { 50:'#e6f5f1',100:'#b3e0d4',200:'#80cbc0',300:'#4db5a8',400:'#1a9f8e',500:'#024938',600:'#023d30',700:'#013028',800:'#01241f',900:'#001816' },
-                        gold: { 50:'#fff5e0',100:'#ffe6b3',200:'#ffd680',300:'#ffc64d',400:'#ffb71a',500:'#f9ac00',600:'#d49700',700:'#b07c00',800:'#8c6100',900:'#684600' }
+                        emerald: { 50:'#e8f5f3',100:'#c8e6e0',200:'#97cec4',300:'#66b5a8',400:'#359c8c',500:'#128C7E',600:'#0e7065',700:'#075E54',800:'#054540',900:'#032e2b' },
+                        gold: { 50:'#e8faf0',100:'#c2f5d9',200:'#97ebbb',300:'#6de19d',400:'#42d77f',500:'#25D366',600:'#1bb55a',700:'#179148',800:'#136d38',900:'#0e4a26' }
                     }
                 }
             }
@@ -202,7 +202,7 @@
         };
 
         const styles = {
-            success: { bg: 'linear-gradient(135deg, #024938, #013028)', accent: '#f9ac00' },
+            success: { bg: 'linear-gradient(135deg, #128C7E, #075E54)', accent: '#25D366' },
             error:   { bg: 'linear-gradient(135deg, #dc2626, #991b1b)', accent: '#fca5a5' },
             warning: { bg: 'linear-gradient(135deg, #d97706, #92400e)', accent: '#fde68a' },
             info:    { bg: 'linear-gradient(135deg, #2563eb, #1e3a8a)', accent: '#93c5fd' }
