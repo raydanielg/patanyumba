@@ -15,7 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
+            $table->enum('role', ['admin', 'landlord', 'agent', 'tenant'])->default('tenant');
+            $table->enum('kyc_status', ['unverified', 'pending', 'approved', 'rejected', 'suspended'])->default('unverified');
+            $table->enum('verification_level', ['none', 'basic', 'full'])->default('none');
+            $table->string('avatar')->nullable();
+            $table->string('business_name')->nullable();
+            $table->text('address')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
