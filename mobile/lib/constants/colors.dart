@@ -28,6 +28,7 @@ class AppColors {
   static const Color scaffoldBg = Color(0xFFF8FAF9);
   static const Color cardBg = Colors.white;
   static const Color inputBorder = Color(0xFFE2E8F0);
+  static const Color overlayBg = Color(0xFFECE5DD);
 
   // Text
   static const Color textPrimary = Color(0xFF1E293B);

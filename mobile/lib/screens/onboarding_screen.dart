@@ -21,6 +21,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       description:
           'Your trusted companion for finding the perfect home. Browse thousands of verified property listings anytime, anywhere.',
       badge: 'Find Your Home',
+      imagePath: 'assets/images/14485.jpg',
     ),
     _OnboardingPage(
       icon: Icons.verified_user_outlined,
@@ -28,6 +29,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       description:
           'Every property is checked and verified. No fake listings, no wasted time — just real homes from trusted landlords.',
       badge: 'Trusted & Verified',
+      imagePath: 'assets/images/39430.jpg',
     ),
     _OnboardingPage(
       icon: Icons.flash_on_outlined,
@@ -35,6 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       description:
           'Connect directly with landlords, schedule visits, and move in quickly. Your new home is just a few taps away.',
       badge: 'Quick & Easy',
+      imagePath: 'assets/images/55147.jpg',
     ),
     _OnboardingPage(
       icon: Icons.favorite_outline,
@@ -42,6 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       description:
           'Join thousands of people using Patanyumba to find their dream home. Find. Rent. Move In.',
       badge: 'Get Started',
+      imagePath: 'assets/images/14485.jpg',
     ),
   ];
 
@@ -233,12 +237,14 @@ class _OnboardingPage {
   final String title;
   final String description;
   final String badge;
+  final String imagePath;
 
   const _OnboardingPage({
     required this.icon,
     required this.title,
     required this.description,
     required this.badge,
+    required this.imagePath,
   });
 }
 
