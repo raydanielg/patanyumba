@@ -271,10 +271,12 @@ class _SlideContent extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Icon(
-                    slide.icon,
-                    size: 72,
-                    color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Image.asset(
+                      slide.iconPath,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
