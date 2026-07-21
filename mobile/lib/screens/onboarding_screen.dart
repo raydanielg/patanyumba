@@ -16,36 +16,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<_OnboardingPage> _pages = const [
     _OnboardingPage(
-      icon: Icons.search_outlined,
+      iconPath: 'assets/logo/whitelogo.png',
       title: 'Welcome to Patanyumba',
       description:
           'Your trusted companion for finding the perfect home. Browse thousands of verified property listings anytime, anywhere.',
       badge: 'Find Your Home',
-      imagePath: 'assets/images/14485.jpg',
     ),
     _OnboardingPage(
-      icon: Icons.verified_user_outlined,
+      iconPath: 'assets/icons/verified.png',
       title: 'Verified Listings',
       description:
           'Every property is checked and verified. No fake listings, no wasted time — just real homes from trusted landlords.',
       badge: 'Trusted & Verified',
-      imagePath: 'assets/images/39430.jpg',
     ),
     _OnboardingPage(
-      icon: Icons.flash_on_outlined,
+      iconPath: 'assets/icons/movefst.png',
       title: 'Move In Fast',
       description:
           'Connect directly with landlords, schedule visits, and move in quickly. Your new home is just a few taps away.',
       badge: 'Quick & Easy',
-      imagePath: 'assets/images/55147.jpg',
     ),
     _OnboardingPage(
-      icon: Icons.favorite_outline,
+      iconPath: 'assets/icons/safe.png',
       title: 'Start Your Journey',
       description:
           'Join thousands of people using Patanyumba to find their dream home. Find. Rent. Move In.',
       badge: 'Get Started',
-      imagePath: 'assets/images/14485.jpg',
     ),
   ];
 
@@ -213,18 +209,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 }
 
 class _OnboardingPage {
-  final IconData icon;
+  final String iconPath;
   final String title;
   final String description;
   final String badge;
-  final String imagePath;
 
   const _OnboardingPage({
-    required this.icon,
+    required this.iconPath,
     required this.title,
     required this.description,
     required this.badge,
-    required this.imagePath,
   });
 }
 
