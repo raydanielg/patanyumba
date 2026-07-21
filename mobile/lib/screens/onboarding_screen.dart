@@ -82,7 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: AppColors.overlayBg,
       body: SafeArea(
         child: Column(
           children: [
@@ -254,89 +254,125 @@ class _SlideContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          // Icon container
-          Expanded(
-            child: Center(
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      AppColors.tealGreen50,
-                      AppColors.tealGreen100,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(48),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.tealGreen.withValues(alpha: 0.1),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  slide.icon,
-                  size: 80,
-                  color: AppColors.tealGreen,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          // Title
-          Text(
-            slide.title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          // Description
-          Text(
-            slide.description,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 15,
-              color: AppColors.textSecondary,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // Badge
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.lightGreen.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.lightGreen.withValues(alpha: 0.3),
-                width: 1,
-              ),
-            ),
-            child: Text(
-              slide.badge,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: AppColors.lightGreen600,
-              ),
-            ),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: Stack(
+          children: [
+            // Background image
+            Positioned.fill(
+              child: Image.asset(
+                slide.imagePath,
+                fit: BoxFit.cover,
+              ),
+            ),
+            // Overlay #ece5dd
+            Positioned.fill(
+              child: Container(
+                color: AppColors.overlayBg.withValues(alpha: 0.88),
+              ),
+            ),
+            // Content
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  const SizedBox(height: 24),
+                  // Icon container
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        width: 180,
+                        height: 180,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              AppColors.tealGreen,
+                              AppColors.darkTealGreen,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(44),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.tealGreen.withValues(alpha: 0.3),
+                              blurRadius: 24,
+                              spreadRadius: 2,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          slide.icon,
+                          size: 72,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Title
+                  Text(
+                    slide.title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.darkTealGreen,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Description
+                  Text(
+                    slide.description,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: AppColors.textSecondary,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Badge
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppColors.tealGreen.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppColors.tealGreen.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      slide.badge,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.tealGreen,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
