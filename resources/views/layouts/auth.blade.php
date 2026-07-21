@@ -7,6 +7,10 @@
 
     <title>@yield('title', config('app.name', 'Patanyumba'))</title>
 
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo/logoone.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('logo/logoone.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('logo/logoone.png') }}">
+    <link rel="shortcut icon" href="{{ asset('logo/logoone.png') }}">
     <meta name="theme-color" content="#075E54">
     <meta property="og:title" content="{{ config('app.name', 'Patanyumba') }}">
     <meta property="og:description" content="Find. Rent. Move In.">

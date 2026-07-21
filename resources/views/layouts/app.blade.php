@@ -9,6 +9,12 @@
 
     <title>{{ config('app.name', 'Patanyumba') }}</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo/logoone.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('logo/logoone.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('logo/logoone.png') }}">
+    <link rel="shortcut icon" href="{{ asset('logo/logoone.png') }}">
+
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito:400,500,600,700,800,900&display=swap" rel="stylesheet">
