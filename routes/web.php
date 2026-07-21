@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PropertyController;
+use App\Http\Controllers\Admin\KycController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SettingController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -13,6 +20,36 @@ Route::get('/home', function () {
     return redirect()->route('admin.dashboard');
 })->name('home');
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/users', [UserController::class, 'index'])->name('users');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::post('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.role');
+
+    Route::get('/properties', [PropertyController::class, 'index'])->name('properties');
+    Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+    Route::post('/properties/{property}/approve', [PropertyController::class, 'approve'])->name('properties.approve');
+    Route::post('/properties/{property}/reject', [PropertyController::class, 'reject'])->name('properties.reject');
+    Route::post('/properties/{property}/toggle-featured', [PropertyController::class, 'toggleFeatured'])->name('properties.toggle-featured');
+
+    Route::get('/kyc', [KycController::class, 'index'])->name('kyc');
+    Route::post('/kyc/{document}/approve', [KycController::class, 'approve'])->name('kyc.approve');
+    Route::post('/kyc/{document}/reject', [KycController::class, 'reject'])->name('kyc.reject');
+
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments');
+    Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+
+    Route::get('/subscriptions/plans', [SubscriptionController::class, 'plans'])->name('subscriptions.plans');
+    Route::post('/subscriptions/plans', [SubscriptionController::class, 'storePlan'])->name('subscriptions.plans.store');
+    Route::post('/subscriptions/plans/{plan}/toggle', [SubscriptionController::class, 'togglePlan'])->name('subscriptions.plans.toggle');
+    Route::get('/subscriptions', [SubscriptionController::class, 'subscriptions'])->name('subscriptions');
+
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports');
+    Route::post('/reports/{report}/resolve', [ReportController::class, 'resolve'])->name('reports.resolve');
+    Route::post('/reports/{report}/dismiss', [ReportController::class, 'dismiss'])->name('reports.dismiss');
+
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+    Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
 });
