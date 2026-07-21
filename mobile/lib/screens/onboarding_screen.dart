@@ -230,54 +230,19 @@ class _SlideContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: AppColors.overlayBg,
-        borderRadius: BorderRadius.circular(28),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           children: [
             const SizedBox(height: 24),
-            // Icon container
+            // Icon image
             Expanded(
               child: Center(
-                child: Container(
-                  width: 180,
-                  height: 180,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        AppColors.tealGreen,
-                        AppColors.darkTealGreen,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(44),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.tealGreen.withValues(alpha: 0.3),
-                        blurRadius: 24,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Image.asset(
-                      slide.iconPath,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
+                child: Image.asset(
+                  slide.iconPath,
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
