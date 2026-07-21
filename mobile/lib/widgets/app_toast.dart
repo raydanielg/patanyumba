@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
-import 'colors.dart';
+import '../constants/colors.dart';
 
 class AppToast {
   static void show(
@@ -30,7 +30,7 @@ class AppToast {
             )
           : null,
       alignment: Alignment.topCenter,
-      autoClose: const Duration(seconds: 5),
+      autoCloseDuration: const Duration(seconds: 5),
       animationDuration: const Duration(milliseconds: 400),
       animationBuilder: (context, animation, alignment, child) {
         return FadeTransition(
