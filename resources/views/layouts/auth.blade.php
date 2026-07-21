@@ -71,9 +71,22 @@
     <main id="authMain" class="relative z-10 min-h-screen flex items-center justify-center py-0 px-0 sm:py-8 sm:px-6 lg:px-8">
         <div class="w-full max-w-5xl grid lg:grid-cols-2 gap-0 lg:gap-8 items-center">
 
-            {{-- Left Column: Branding (hidden on mobile) --}}
-            <div class="hidden lg:flex flex-col justify-center relative overflow-hidden rounded-3xl h-[600px] shadow-2xl animated-gradient">
-                {{-- Decorative Elements --}}
+            {{-- Left Column: Image Slideshow + Branding (hidden on mobile) --}}
+            <div class="hidden lg:flex flex-col justify-center relative overflow-hidden rounded-3xl h-[600px] shadow-2xl">
+                {{-- Background Slideshow --}}
+                <div id="authSlideshow" class="absolute inset-0">
+                    <img src="{{ asset('14485.jpg') }}" alt="" class="auth-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100">
+                    <img src="{{ asset('39430.jpg') }}" alt="" class="auth-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
+                    <img src="{{ asset('55147.jpg') }}" alt="" class="auth-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
+                </div>
+                {{-- Slide Indicators --}}
+                <div id="slideDots" class="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                    <span class="slide-dot w-2 h-2 rounded-full bg-white/80 transition-all"></span>
+                    <span class="slide-dot w-2 h-2 rounded-full bg-white/30 transition-all"></span>
+                    <span class="slide-dot w-2 h-2 rounded-full bg-white/30 transition-all"></span>
+                </div>
+                {{-- Overlay --}}
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/85 via-emerald-800/75 to-emerald-700/65"></div>
                 <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 24px 24px;"></div>
                 <div class="absolute top-0 right-0 w-72 h-72 bg-gold-500/15 rounded-full blur-3xl pulse-glow"></div>
                 <div class="absolute bottom-0 left-0 w-72 h-72 bg-emerald-400/10 rounded-full blur-3xl pulse-glow"></div>
@@ -272,6 +285,34 @@
                 showToast('error', 'Validation Error', {!! json_encode($error) !!});
             @endforeach
         @endif
+    })();
+    </script>
+
+    {{-- Slideshow Script --}}
+    <script>
+    (function() {
+        const slides = document.querySelectorAll('.auth-slide');
+        const dots   = document.querySelectorAll('.slide-dot');
+        if (slides.length === 0) return;
+        let current = 0;
+
+        function showSlide(idx) {
+            slides.forEach((s, i) => {
+                s.classList.toggle('opacity-100', i === idx);
+                s.classList.toggle('opacity-0', i !== idx);
+            });
+            dots.forEach((d, i) => {
+                d.className = d.className.replace(/bg-white\/(80|30)/, '').trim();
+                d.classList.add(i === idx ? 'bg-white/80' : 'bg-white/30');
+                if (i === idx) { d.classList.add('w-5'); d.classList.remove('w-2'); }
+                else { d.classList.add('w-2'); d.classList.remove('w-5'); }
+            });
+            current = idx;
+        }
+
+        setInterval(() => {
+            showSlide((current + 1) % slides.length);
+        }, 4000);
     })();
     </script>
 
