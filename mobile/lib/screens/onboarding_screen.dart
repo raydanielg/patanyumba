@@ -123,26 +123,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       color: AppColors.tealGreen,
                     ),
                   ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: _finish,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.tealGreen50,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        'Skip',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.tealGreen,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
