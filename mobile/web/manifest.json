@@ -1,11 +1,11 @@
 {
-    "name": "mobile",
-    "short_name": "mobile",
+    "name": "Patanyumba",
+    "short_name": "Patanyumba",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#075E54",
+    "theme_color": "#128C7E",
+    "description": "Patanyumba - Find. Rent. Move In.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
