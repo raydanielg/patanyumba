@@ -217,4 +217,95 @@ class PropertyController extends Controller
         }
         return back()->with('status', $property->is_featured ? 'Property featured' : 'Feature removed');
     }
+
+    public function uploadMedia(Request $request, Property $property)
+    {
+        $request->validate([
+            'media_type' => 'required|in:image,video',
+            'image' => 'required_if:media_type,image|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'video' => 'required_if:media_type,video|file|mimes:mp4,mov,avi,webm|max:51200',
+            'video_url' => 'nullable|string|url',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        $mediaType = $request->input('media_type', 'image');
+        $sortOrder = $property->images()->max('sort_order') + 1;
+
+        if ($mediaType === 'image' && $request->hasFile('image')) {
+            $file = $request->file('image');
+            $path = $file->store('properties/' . $property->id, 'public');
+
+            $image = PropertyImage::create([
+                'property_id' => $property->id,
+                'media_type' => 'image',
+                'image_path' => $path,
+                'thumbnail_path' => $path,
+                'is_primary' => $property->images()->where('media_type', 'image')->count() === 0,
+                'sort_order' => $sortOrder,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Image uploaded successfully',
+                'media' => $image,
+            ]);
+        }
+
+        if ($mediaType === 'video') {
+            $videoUrl = null;
+            $thumbnailUrl = null;
+
+            if ($request->hasFile('video')) {
+                $file = $request->file('video');
+                $videoUrl = $file->store('properties/' . $property->id . '/videos', 'public');
+            } elseif ($request->filled('video_url')) {
+                $videoUrl = $request->input('video_url');
+            }
+
+            if ($request->hasFile('thumbnail')) {
+                $thumb = $request->file('thumbnail');
+                $thumbnailUrl = $thumb->store('properties/' . $property->id . '/thumbnails', 'public');
+            }
+
+            $image = PropertyImage::create([
+                'property_id' => $property->id,
+                'media_type' => 'video',
+                'image_path' => $thumbnailUrl,
+                'video_url' => $videoUrl,
+                'thumbnail_url' => $thumbnailUrl,
+                'is_primary' => false,
+                'sort_order' => $sortOrder,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Video uploaded successfully',
+                'media' => $image,
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'No file provided'], 400);
+    }
+
+    public function deleteMedia(Property $property, $mediaId)
+    {
+        $media = $property->images()->findOrFail($mediaId);
+
+        if ($media->image_path && !str_starts_with($media->image_path, 'http')) {
+            Storage::disk('public')->delete($media->image_path);
+        }
+        if ($media->video_url && !str_starts_with($media->video_url, 'http')) {
+            Storage::disk('public')->delete($media->video_url);
+        }
+        if ($media->thumbnail_url && !str_starts_with($media->thumbnail_url, 'http')) {
+            Storage::disk('public')->delete($media->thumbnail_url);
+        }
+
+        $media->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Media deleted successfully']);
+        }
+        return back()->with('status', 'Media deleted');
+    }
 }
