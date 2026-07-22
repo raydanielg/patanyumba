@@ -109,7 +109,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.asset(
-                        'assets/logo/whitelogo.png',
+                        'assets/logotrans.png',
                         fit: BoxFit.contain,
                       ),
                     ),
