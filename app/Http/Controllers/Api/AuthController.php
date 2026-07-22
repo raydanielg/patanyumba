@@ -145,9 +145,72 @@ class AuthController extends Controller
             'region' => $user->region,
             'district' => $user->district,
             'kyc_status' => $user->kyc_status,
+            'verification_level' => $user->verification_level,
+            'business_name' => $user->business_name,
+            'address' => $user->address,
             'is_active' => $user->is_active,
             'email_verified_at' => $user->email_verified_at,
             'created_at' => $user->created_at,
         ];
+    }
+
+    public function becomeLandlord(Request $request)
+    {
+        $validated = $request->validate([
+            'role' => 'required|in:landlord,agent',
+            'business_name' => 'nullable|string|max:255',
+            'region' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
+            'address' => 'nullable|string|max:500',
+            'phone' => 'sometimes|nullable|string|max:20',
+        ]);
+
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Admins cannot change role this way.',
+            ], 422);
+        }
+
+        if ($user->role === 'landlord' || $user->role === 'agent') {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are already a ' . $user->role . '.',
+            ], 422);
+        }
+
+        $user->update([
+            'role' => $validated['role'],
+            'business_name' => $validated['business_name'] ?? null,
+            'region' => $validated['region'],
+            'district' => $validated['district'],
+            'address' => $validated['address'] ?? null,
+            'phone' => $validated['phone'] ?? $user->phone,
+            'kyc_status' => 'pending',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'You are now a ' . $validated['role'] . '. Please complete KYC verification to list properties.',
+            'user' => $this->userResponse($user->fresh()),
+        ]);
+    }
+
+    public function myKycStatus(Request $request)
+    {
+        $user = $request->user();
+        $documents = $user->kycDocuments()->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'kyc_status' => $user->kyc_status,
+                'verification_level' => $user->verification_level,
+                'role' => $user->role,
+                'documents' => $documents,
+            ],
+        ]);
     }
 }
