@@ -272,14 +272,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icons.help_outline,
               title: 'Help Center',
               subtitle: 'FAQs and guides',
-              onTap: () => _showComingSoon('Help Center'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HelpSupportScreen()),
+                );
+              },
             ),
             _buildDivider(),
             _buildNavTile(
               icon: Icons.support_agent_outlined,
               title: 'Contact Support',
-              subtitle: 'Get help from our team',
-              onTap: () => _showComingSoon('Contact Support'),
+              subtitle: 'Chat with our support team',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HelpSupportScreen()),
+                );
+              },
             ),
             _buildDivider(),
             _buildNavTile(
