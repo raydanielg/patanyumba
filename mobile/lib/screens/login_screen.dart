@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../services/auth_service.dart';
 import '../widgets/app_toast.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
@@ -32,17 +33,29 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _obscurePassword = !_obscurePassword);
   }
 
-  void _login() {
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() => _isLoading = false);
-        AppToast.success(context, 'Welcome back!', 'Login successful');
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+      try {
+        final success = await AuthService().login(
+          _emailController.text.trim(),
+          _passwordController.text,
         );
-      });
+
+        if (success && mounted) {
+          AppToast.success(context, 'Welcome back!', 'Login successful');
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          AppToast.error(context, 'Login Failed', e.toString());
+        }
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
     }
   }
 
