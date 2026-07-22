@@ -464,7 +464,8 @@ class _HomePageState extends State<_HomePage> {
     );
   }
 
-  Widget _buildCategoryChip(IconData icon, String label) {
+  Widget _buildCategoryChip(String name, String? imageUrl, String? iconName) {
+    final icon = _getCategoryIcon(iconName);
     return Container(
       margin: const EdgeInsets.only(right: 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -479,10 +480,22 @@ class _HomePageState extends State<_HomePage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppColors.tealGreen),
+          if (imageUrl != null && imageUrl.isNotEmpty)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                imageUrl,
+                width: 20,
+                height: 20,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Icon(icon, size: 16, color: AppColors.tealGreen),
+              ),
+            )
+          else
+            Icon(icon, size: 16, color: AppColors.tealGreen),
           const SizedBox(width: 6),
           Text(
-            label,
+            name,
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -492,6 +505,37 @@ class _HomePageState extends State<_HomePage> {
         ],
       ),
     );
+  }
+
+  IconData _getCategoryIcon(String? iconName) {
+    switch (iconName) {
+      case 'home_work':
+        return Icons.home_work_outlined;
+      case 'apartment':
+        return Icons.apartment_outlined;
+      case 'bed':
+        return Icons.bed_outlined;
+      case 'store':
+        return Icons.store_outlined;
+      case 'business':
+        return Icons.business_outlined;
+      case 'landscape':
+        return Icons.landscape_outlined;
+      case 'house':
+        return Icons.house_outlined;
+      case 'villa':
+        return Icons.villa_outlined;
+      case 'warehouse':
+        return Icons.warehouse_outlined;
+      case 'garage':
+        return Icons.garage_outlined;
+      case 'farm':
+        return Icons.yard_outlined;
+      case 'plot':
+        return Icons.landscape_outlined;
+      default:
+        return Icons.category_outlined;
+    }
   }
 
   Widget _buildPropertyCard(String title, String location) {
