@@ -103,7 +103,7 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
-        $property->load('user', 'images', 'units', 'reviews.user');
+        $property->load('user', 'images', 'units', 'reviews.user', 'categories');
 
         if (auth()->check()) {
             $property->increment('views_count');
