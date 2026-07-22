@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../l10n/app_strings.dart';
 import '../services/auth_service.dart';
 import '../widgets/app_toast.dart';
+import '../widgets/language_selector.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
