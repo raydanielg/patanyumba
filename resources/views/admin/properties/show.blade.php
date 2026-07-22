@@ -474,5 +474,111 @@ document.getElementById('confirmDeleteUnitBtn').addEventListener('click', async 
 document.querySelectorAll('[id$="Modal"]').forEach(m => {
     m.addEventListener('click', function(e) { if (e.target === this) { this.classList.add('hidden'); this.classList.remove('flex'); } });
 });
+
+// === Media Upload ===
+let uploadType = 'image';
+
+function openUploadModal(type) {
+    uploadType = type;
+    document.getElementById('uploadModalTitle').textContent = type === 'video' ? 'Add Video' : 'Add Image';
+    document.getElementById('uploadModalIcon').className = type === 'video' ? 'w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center' : 'w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center';
+    document.getElementById('uploadModalIconSvg').innerHTML = type === 'video'
+        ? '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>'
+        : '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>';
+    document.getElementById('uploadModalGradient').className = type === 'video'
+        ? 'bg-gradient-to-r from-sky-600 to-sky-800 px-6 py-4 flex items-center justify-between sticky top-0 z-10'
+        : 'bg-gradient-to-r from-emerald-600 to-emerald-800 px-6 py-4 flex items-center justify-between sticky top-0 z-10';
+
+    // Show/hide fields
+    document.getElementById('imageUploadField').style.display = type === 'image' ? 'block' : 'none';
+    document.getElementById('videoUploadField').style.display = type === 'video' ? 'block' : 'none';
+    document.getElementById('videoUrlField').style.display = type === 'video' ? 'block' : 'none';
+    document.getElementById('thumbnailField').style.display = type === 'video' ? 'block' : 'none';
+
+    document.getElementById('uploadForm').reset();
+    document.getElementById('uploadFormErrors').classList.add('hidden');
+    const m = document.getElementById('uploadModal');
+    m.classList.remove('hidden'); m.classList.add('flex');
+}
+
+function closeUploadModal() {
+    const m = document.getElementById('uploadModal');
+    m.classList.add('hidden'); m.classList.remove('flex');
+}
+
+document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('uploadSubmitBtn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" class="opacity-25"/><path stroke-width="3" d="M4 12a8 8 0 018-8"/></svg> Uploading...';
+    btn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('media_type', uploadType);
+
+    if (uploadType === 'image') {
+        const file = document.getElementById('imageFile').files[0];
+        if (!file) {
+            const el = document.getElementById('uploadFormErrors');
+            el.textContent = 'Please select an image'; el.classList.remove('hidden');
+            btn.innerHTML = orig; btn.disabled = false;
+            return;
+        }
+        formData.append('image', file);
+    } else {
+        const videoFile = document.getElementById('videoFile').files[0];
+        const videoUrl = document.getElementById('videoUrlInput').value;
+        const thumbFile = document.getElementById('thumbnailFile').files[0];
+        if (videoFile) {
+            formData.append('video', videoFile);
+        } else if (videoUrl) {
+            formData.append('video_url', videoUrl);
+        } else {
+            const el = document.getElementById('uploadFormErrors');
+            el.textContent = 'Please upload a video file or provide a video URL'; el.classList.remove('hidden');
+            btn.innerHTML = orig; btn.disabled = false;
+            return;
+        }
+        if (thumbFile) formData.append('thumbnail', thumbFile);
+    }
+
+    try {
+        const url = '{{ route("admin.properties.media.upload", ["property" => $property]) }}';
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+            body: formData
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            showToast(data.message);
+            closeUploadModal();
+            setTimeout(() => location.reload(), 800);
+        } else {
+            const errs = data.errors ? Object.values(data.errors).flat().join('<br>') : (data.message || 'Error');
+            const el = document.getElementById('uploadFormErrors');
+            el.innerHTML = errs; el.classList.remove('hidden');
+        }
+    } catch { showToast('Network error', 'error'); }
+    btn.innerHTML = orig; btn.disabled = false;
+});
+
+async function deleteMedia(mediaId) {
+    if (!confirm('Delete this media?')) return;
+    try {
+        const url = '{{ route("admin.properties.media.delete", ["property" => $property, "media" => ":ID"]) }}'.replace(':ID', mediaId);
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success) {
+            const el = document.getElementById('media-' + mediaId);
+            if (el) { el.style.transition = 'all 0.3s'; el.style.opacity = '0'; el.style.transform = 'scale(0.8)'; setTimeout(() => el.remove(), 300); }
+            showToast(data.message);
+            setTimeout(() => location.reload(), 1000);
+        } else { showToast(data.message || 'Failed', 'error'); }
+    } catch { showToast('Network error', 'error'); }
+}
 </script>
 @endsection
