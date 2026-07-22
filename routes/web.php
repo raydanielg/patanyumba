@@ -82,4 +82,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
     Route::post('/settings/toggle', [SettingController::class, 'toggle'])->name('settings.toggle');
+    Route::post('/settings/hero-upload', [SettingController::class, 'uploadHeroImage'])->name('settings.hero-upload');
 });
