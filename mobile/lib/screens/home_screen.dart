@@ -1326,6 +1326,7 @@ class _ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<_ProfilePage> {
   Map<String, dynamic>? _user;
   bool _isLoading = true;
+  int _unreadCount = 0;
 
   @override
   void initState() {
@@ -1358,6 +1359,16 @@ class _ProfilePageState extends State<_ProfilePage> {
         _isLoading = false;
       });
     }
+    _fetchUnreadCount();
+  }
+
+  Future<void> _fetchUnreadCount() async {
+    try {
+      final data = await ApiService().get('notifications/unread-count');
+      if (mounted) {
+        setState(() => _unreadCount = data['unread_count'] ?? 0);
+      }
+    } catch (_) {}
   }
 
   @override
