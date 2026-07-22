@@ -494,10 +494,20 @@ class _HomePageState extends State<_HomePage> {
     );
   }
 
-  Widget _buildCategoryCard(String name, String? imageUrl, String? iconName) {
+  Widget _buildCategoryCard(String name, String? imageUrl, String? iconName, int categoryId) {
     final icon = _getCategoryIcon(iconName);
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CategoryPropertiesScreen(
+              categoryId: categoryId,
+              categoryName: name,
+            ),
+          ),
+        );
+      },
       child: Container(
         width: 64,
         margin: const EdgeInsets.only(right: 10),
