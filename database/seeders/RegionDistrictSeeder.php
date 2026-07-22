@@ -41,21 +41,24 @@ class RegionDistrictSeeder extends Seeder
 
         $order = 1;
         foreach ($data as $regionName => $districts) {
-            $region = Region::create([
-                'name' => $regionName,
-                'code' => strtoupper(substr(str_replace(' ', '', $regionName), 0, 3)),
-                'sort_order' => $order++,
-                'is_active' => true,
-            ]);
+            $region = Region::firstOrCreate(
+                ['name' => $regionName],
+                [
+                    'code' => strtoupper(substr(str_replace(' ', '', $regionName), 0, 3)),
+                    'sort_order' => $order++,
+                    'is_active' => true,
+                ]
+            );
 
             $distOrder = 1;
             foreach ($districts as $districtName) {
-                District::create([
-                    'region_id' => $region->id,
-                    'name' => $districtName,
-                    'sort_order' => $distOrder++,
-                    'is_active' => true,
-                ]);
+                District::firstOrCreate(
+                    ['region_id' => $region->id, 'name' => $districtName],
+                    [
+                        'sort_order' => $distOrder++,
+                        'is_active' => true,
+                    ]
+                );
             }
         }
     }
