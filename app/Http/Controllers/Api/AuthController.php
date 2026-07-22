@@ -24,7 +24,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'password' => Hash::make($validated['password']),
-            'role' => 'user',
+            'role' => 'tenant',
             'is_active' => true,
         ]);
 
