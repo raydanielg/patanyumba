@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Property;
+use App\Models\Region;
 
 class SettingController extends Controller
 {
