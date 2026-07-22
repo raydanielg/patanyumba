@@ -17,16 +17,33 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|regex:/^0[6-7]\d{8}$/|max:10',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'sometimes|in:tenant,landlord,agent',
+            'business_name' => 'nullable|string|max:255',
+            'region' => 'nullable|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:500',
         ]);
 
-        $user = User::create([
+        $role = $validated['role'] ?? 'tenant';
+
+        $userData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'password' => Hash::make($validated['password']),
-            'role' => 'tenant',
+            'role' => $role,
             'is_active' => true,
-        ]);
+        ];
+
+        if ($role !== 'tenant') {
+            $userData['business_name'] = $validated['business_name'] ?? null;
+            $userData['region'] = $validated['region'] ?? null;
+            $userData['district'] = $validated['district'] ?? null;
+            $userData['address'] = $validated['address'] ?? null;
+            $userData['kyc_status'] = 'pending';
+        }
+
+        $user = User::create($userData);
 
         $token = $user->createToken('mobile-app')->plainTextToken;
 
