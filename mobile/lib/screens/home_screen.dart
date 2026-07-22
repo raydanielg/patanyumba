@@ -1044,30 +1044,272 @@ class _SearchPage extends StatelessWidget {
   }
 }
 
-class _FavoritesPage extends StatelessWidget {
+class _FavoritesPage extends StatefulWidget {
   const _FavoritesPage();
+
+  @override
+  State<_FavoritesPage> createState() => _FavoritesPageState();
+}
+
+class _FavoritesPageState extends State<_FavoritesPage> {
+  List<Map<String, dynamic>> _favorites = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchFavorites();
+  }
+
+  Future<void> _fetchFavorites() async {
+    setState(() => _isLoading = true);
+    try {
+      final data = await ApiService().get('favorites');
+      final favs = (data['data'] as List<dynamic>?) ?? [];
+      setState(() {
+        _favorites = favs.cast<Map<String, dynamic>>();
+        _isLoading = false;
+      });
+    } catch (_) {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Saved')),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.favorite_outline, size: 64, color: AppColors.textHint),
-            SizedBox(height: 16),
-            Text(
-              'No saved properties yet',
-              style: TextStyle(
-                fontSize: 16,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: const Text('Saved Properties')),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _favorites.isEmpty
+              ? RefreshIndicator(
+                  onRefresh: _fetchFavorites,
+                  child: ListView(
+                    children: [
+                      const SizedBox(height: 200),
+                      Center(
+                        child: Column(
+                          children: [
+                            Icon(Icons.favorite_border, size: 64, color: AppColors.textHint),
+                            const SizedBox(height: 16),
+                            Text(
+                              'No saved properties yet',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Tap the heart icon on a property to save it here',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textHint,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _fetchFavorites,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _favorites.length,
+                    itemBuilder: (context, index) {
+                      final fav = _favorites[index];
+                      final property = fav['property'] as Map<String, dynamic>?;
+                      if (property == null) return const SizedBox.shrink();
+                      final images = property['images'] as List<dynamic>?;
+                      String? imgUrl;
+                      if (images != null && images.isNotEmpty) {
+                        final img = images[0] as Map<String, dynamic>;
+                        imgUrl = img['url'] ?? img['image_url'];
+                      }
+                      final title = property['title'] ?? 'Untitled';
+                      final region = property['region'] ?? '';
+                      final district = property['district'] ?? '';
+                      final price = property['price'];
+                      final propertyType = property['property_type'] ?? '';
+                      final isAvailable = property['is_available'] == true;
+
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PropertyDetailScreen(propertyId: property['id'] as int),
+                            ),
+                          ).then((_) => _fetchFavorites());
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: AppColors.tealGreen100),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  color: AppColors.tealGreen50,
+                                  child: imgUrl != null && imgUrl.isNotEmpty
+                                      ? Image.network(
+                                          imgUrl,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) => Center(
+                                            child: Icon(Icons.home_outlined, size: 28, color: AppColors.tealGreen),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Icon(Icons.home_outlined, size: 28, color: AppColors.tealGreen),
+                                        ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w800,
+                                            color: AppColors.textPrimary,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.location_on, size: 12, color: AppColors.textHint),
+                                            const SizedBox(width: 2),
+                                            Expanded(
+                                              child: Text(
+                                                '$region, $district',
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: AppColors.textSecondary,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.tealGreen50,
+                                                borderRadius: BorderRadius.circular(6),
+                                              ),
+                                              child: Text(
+                                                _capitalizeType(propertyType),
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.tealGreen,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                              decoration: BoxDecoration(
+                                                color: isAvailable
+                                                    ? const Color(0xFFe8f5e9)
+                                                    : const Color(0xFFffebee),
+                                                borderRadius: BorderRadius.circular(6),
+                                              ),
+                                              child: Text(
+                                                isAvailable ? 'Available' : 'Occupied',
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: isAvailable
+                                                      ? const Color(0xFF2e7d32)
+                                                      : const Color(0xFFc62828),
+                                                ),
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            if (price != null)
+                                              Text(
+                                                _formatPrice(price),
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppColors.tealGreen,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 40,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    color: Colors.redAccent.withValues(alpha: 0.05),
+                                    border: Border(
+                                      left: BorderSide(color: AppColors.tealGreen100, width: 1),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.favorite, color: Colors.redAccent, size: 20),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Saved',
+                                        style: TextStyle(
+                                          fontSize: 8,
+                                          color: Colors.redAccent.withValues(alpha: 0.7),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
     );
+  }
+
+  String _capitalizeType(String s) {
+    if (s.isEmpty) return s;
+    return s[0].toUpperCase() + s.substring(1).replaceAll('_', ' ');
+  }
+
+  String _formatPrice(dynamic price) {
+    if (price == null) return 'N/A';
+    final p = double.tryParse(price.toString()) ?? 0;
+    if (p >= 1000000) {
+      return '${(p / 1000000).toStringAsFixed(1)}M TZS';
+    } else if (p >= 1000) {
+      return '${(p / 1000).toStringAsFixed(0)}K TZS';
+    }
+    return '$p TZS';
   }
 }
 
