@@ -94,7 +94,9 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   }
 
   Widget _buildDetail() {
-    final images = (_property!['images'] as List<dynamic>?) ?? [];
+    final allMedia = (_property!['images'] as List<dynamic>?) ?? [];
+    final images = allMedia.where((m) => (m['media_type'] ?? 'image') == 'image').toList();
+    final videos = allMedia.where((m) => (m['media_type'] ?? 'image') == 'video').toList();
     final title = _property!['title'] ?? 'Untitled';
     final description = _property!['description'] ?? '';
     final price = _property!['price'];
