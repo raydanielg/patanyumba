@@ -11,7 +11,7 @@ class PropertyController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Property::with('user', 'images', 'units');
+        $query = Property::with('user', 'images', 'units', 'categories');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);

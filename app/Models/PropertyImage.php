@@ -10,6 +10,22 @@ class PropertyImage extends Model
 
     protected $casts = ['is_primary' => 'boolean'];
 
+    protected $appends = ['url', 'image_url'];
+
+    public function getUrlAttribute()
+    {
+        $path = $this->image_path;
+        if ($path && str_starts_with($path, 'http')) {
+            return $path;
+        }
+        return $path ? url($path) : null;
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->url;
+    }
+
     public function property()
     {
         return $this->belongsTo(Property::class);
