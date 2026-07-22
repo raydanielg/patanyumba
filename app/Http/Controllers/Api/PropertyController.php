@@ -122,6 +122,52 @@ class PropertyController extends Controller
         ]);
     }
 
+    public function logCall(Request $request, Property $property)
+    {
+        $validated = $request->validate([
+            'call_type' => 'required|in:online,offline',
+            'contact_phone' => 'nullable|string|max:20',
+        ]);
+
+        $call = PropertyCall::create([
+            'property_id' => $property->id,
+            'caller_id' => auth()->id(),
+            'receiver_id' => $property->user_id,
+            'call_type' => $validated['call_type'],
+            'status' => 'initiated',
+            'contact_phone' => $validated['contact_phone'] ?? $property->contact_phone,
+        ]);
+
+        $property->increment('unlock_count');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Call logged',
+            'data' => $call,
+        ], 201);
+    }
+
+    public function endCall(Request $request, Property $property, $callId)
+    {
+        $call = PropertyCall::where('property_id', $property->id)->findOrFail($callId);
+
+        $validated = $request->validate([
+            'status' => 'nullable|in:initiated,connected,missed,failed',
+            'duration_seconds' => 'nullable|integer|min:0',
+        ]);
+
+        $call->update([
+            'status' => $validated['status'] ?? 'connected',
+            'duration_seconds' => $validated['duration_seconds'] ?? 0,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Call ended',
+            'data' => $call,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
