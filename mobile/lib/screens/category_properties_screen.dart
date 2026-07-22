@@ -40,7 +40,8 @@ class _CategoryPropertiesScreenState extends State<CategoryPropertiesScreen> {
         endpoint += '&region=${Uri.encodeComponent(_selectedRegion!)}';
       }
       final data = await ApiService().get(endpoint);
-      final props = (data['data'] as List<dynamic>?) ?? [];
+      final raw = data['data'];
+      final props = (raw is List<dynamic>) ? raw : (raw['data'] as List<dynamic>?) ?? [];
       setState(() {
         _properties = props.cast<Map<String, dynamic>>();
         _isLoading = false;
