@@ -65,7 +65,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     if (a.contains('balcony') || a.contains('terrace')) return Icons.balcony;
     if (a.contains('toilet') || a.contains('bathroom') || a.contains('bath')) return Icons.bathroom;
     if (a.contains('fence') || a.contains('wall')) return Icons.fence;
-    if (a.contains('gate')) return Icons.door_front_door;
+    if (a.contains('gate')) return Icons.login;
     if (a.contains('store') || a.contains('shop')) return Icons.store;
     if (a.contains('play') || a.contains('kids')) return Icons.child_care;
     return Icons.check_circle_outline;
