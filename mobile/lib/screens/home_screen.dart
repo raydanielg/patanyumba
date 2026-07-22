@@ -68,6 +68,7 @@ class _HomePageState extends State<_HomePage> {
   Timer? _heroTimer;
   List<Map<String, dynamic>> _heroSlides = [];
   bool _heroLoading = true;
+  bool _heroEnabled = true;
 
   final List<Map<String, dynamic>> _defaultSlides = [
     {
