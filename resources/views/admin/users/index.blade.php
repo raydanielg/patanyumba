@@ -191,6 +191,52 @@
                         <option value="admin">Admin</option>
                     </select>
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">Mkoa (Region)</label>
+                    <select name="region" id="addUserRegion" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
+                        <option value="">-- Chagua Mkoa --</option>
+                        @php
+                        $tzRegions = [
+                            'Dar es Salaam' => ['Ilala', 'Kinondoni', 'Temeke', 'Kigamboni', 'Ubungo'],
+                            'Dodoma' => ['Dodoma Urban', 'Bahi', 'Chamwino', 'Chemba', 'Kondoa', 'Kongwa', 'Mpwapwa'],
+                            'Arusha' => ['Arusha Urban', 'Arumeru', 'Karatu', 'Longido', 'Monduli', 'Ngorongoro'],
+                            'Mwanza' => ['Ilemela', 'Nyamagana', 'Geita', 'Kwimba', 'Magu', 'Misungwi', 'Sengerema', 'Ukerewe'],
+                            'Tanga' => ['Tanga Urban', 'Handeni', 'Kilindi', 'Korogwe', 'Lushoto', 'Mkinga', 'Muheza', 'Pangani'],
+                            'Kilimanjaro' => ['Moshi Urban', 'Hai', 'Mwanga', 'Rombo', 'Same', 'Siha'],
+                            'Morogoro' => ['Morogoro Urban', 'Gairo', 'Ifakara', 'Kilombero', 'Kilosa', 'Mahenge', 'Malinyi', 'Mvomero', 'Ulanga'],
+                            'Mbeya' => ['Mbeya Urban', 'Chunya', 'Ileje', 'Kyela', 'Mbarali', 'Mbozi', 'Rungwe'],
+                            'Zanzibar' => ['Mjini Magharibi', 'Kaskazini A', 'Kaskazini B', 'Kusini', 'Kati', 'Kusini Unguja'],
+                            'Pwani' => ['Bagamoyo', 'Kibaha', 'Kisarawe', 'Mafia', 'Mkuranga', 'Rufiji'],
+                            'Kagera' => ['Bukoba Urban', 'Bukoba Rural', 'Biharamulo', 'Karagwe', 'Kyerwa', 'Muleba', 'Ngara'],
+                            'Tabora' => ['Tabora Urban', 'Igunga', 'Kaliua', 'Nzega', 'Sikonge', 'Urambo'],
+                            'Rukwa' => ['Sumbawanga Urban', 'Kalambo', 'Lyamba Lya Mfipa', 'Nkasi', 'Sumbawanga Rural'],
+                            'Kigoma' => ['Kigoma Urban', 'Buhigwe', 'Kakonko', 'Kasulu', 'Kibondo', 'Uvinza'],
+                            'Shinyanga' => ['Shinyanga Urban', 'Kahama', 'Kishapu', 'Shinyanga Rural'],
+                            'Singida' => ['Singida Urban', 'Iramba', 'Manyoni', 'Mkalama', 'Singida Rural'],
+                            'Iringa' => ['Iringa Urban', 'Iringa Rural', 'Kilolo', 'Ludewa', 'Makete', 'Mufindi', 'Njombe'],
+                            'Ruvuma' => ['Songea Urban', 'Mbinga', 'Namtumbo', 'Nyasa', 'Songea Rural', 'Tunduru'],
+                            'Mara' => ['Musoma Urban', 'Bunda', 'Butiama', 'Musoma Rural', 'Rorya', 'Serengeti', 'Tarime'],
+                            'Lindi' => ['Lindi Urban', 'Kilwa', 'Lindi Rural', 'Liwale', 'Nachingwea', 'Ruangwa'],
+                            'Mtwara' => ['Mtwara Urban', 'Masasi', 'Mtwara Rural', 'Nanyamba', 'Newala', 'Tandahimba'],
+                            'Geita' => ['Geita Urban', 'Bukombe', 'Chato', 'Geita Rural', 'Mbogwe'],
+                            'Njombe' => ['Njombe Urban', 'Ludewa', 'Makete', 'Njombe Rural'],
+                            'Simiyu' => ['Bariadi', 'Busega', 'Itilima', 'Meatu', 'Simiyu'],
+                            'Katavi' => ['Mpanda Urban', 'Mlele', 'Mpanda Rural', 'Nsimbo'],
+                            'Songwe' => ['Mbozi', 'Momba', 'Songwe'],
+                            'Manyara' => ['Babati Urban', 'Babati Rural', 'Hanang', 'Kiteto', 'Mbulu', 'Simanjiro'],
+                        ];
+                        @endphp
+                        @foreach($tzRegions as $rName => $rDistricts)
+                        <option value="{{ $rName }}">{{ $rName }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">Wilaya (District)</label>
+                    <select name="district" id="addUserDistrict" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" disabled>
+                        <option value="">-- Chagua Wilaya --</option>
+                    </select>
+                </div>
                 <div class="sm:col-span-2">
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">Password <span class="text-red-500">*</span></label>
                     <input type="password" name="password" required minlength="6" placeholder="Minimum 6 characters" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
@@ -244,6 +290,26 @@
 
 <script>
 const CSRF = '{{ csrf_token() }}';
+
+// Tanzania regions data for Add User modal
+const tzRegions = @json($tzRegions);
+const addRegionSelect = document.getElementById('addUserRegion');
+const addDistrictSelect = document.getElementById('addUserDistrict');
+
+addRegionSelect.addEventListener('change', function() {
+    const region = this.value;
+    addDistrictSelect.innerHTML = '<option value="">-- Chagua Wilaya --</option>';
+    if (region && tzRegions[region]) {
+        addDistrictSelect.disabled = false;
+        tzRegions[region].forEach(function(d) {
+            const opt = document.createElement('option');
+            opt.value = d; opt.textContent = d;
+            addDistrictSelect.appendChild(opt);
+        });
+    } else {
+        addDistrictSelect.disabled = true;
+    }
+});
 
 function showToast(msg, type = 'success') {
     const toast = document.getElementById('ajaxToast');
