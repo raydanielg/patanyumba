@@ -268,16 +268,15 @@
                             <div class="flex justify-between"><span class="text-gray-400 text-xs">Number</span><span id="reviewDocNumber" class="font-mono text-xs text-gray-900">—</span></div>
                             <div class="flex justify-between"><span class="text-gray-400 text-xs">Status</span><span id="reviewDocStatus" class="font-medium capitalize text-xs text-gray-900">—</span></div>
                             <div class="flex justify-between"><span class="text-gray-400 text-xs">Submitted</span><span id="reviewDocDate" class="text-xs text-gray-900">—</span></div>
-                            @if($doc->reviewed_at)
-                            <div class="flex justify-between"><span class="text-gray-400 text-xs">Reviewed</span><span id="reviewDocReviewed" class="text-xs text-gray-900">{{ $doc->reviewed_at->format('d M Y') }}</span></div>
-                            @endif
+                            <div id="reviewDocReviewedRow" class="flex justify-between hidden">
+                                <span class="text-gray-400 text-xs">Reviewed</span>
+                                <span id="reviewDocReviewed" class="text-xs text-gray-900">—</span>
+                            </div>
                         </div>
-                        @if($doc->status==='rejected' && $doc->rejection_reason)
-                        <div class="mt-3 pt-3 border-t">
+                        <div id="reviewRejectionBox" class="mt-3 pt-3 border-t hidden">
                             <p class="text-[10px] text-gray-400 mb-1">Rejection Reason</p>
-                            <p class="text-xs text-red-600 bg-red-50 rounded-lg p-2">{{ $doc->rejection_reason }}</p>
+                            <p id="reviewRejectionReason" class="text-xs text-red-600 bg-red-50 rounded-lg p-2"></p>
                         </div>
-                        @endif
                     </div>
 
                     {{-- Quick Actions --}}
