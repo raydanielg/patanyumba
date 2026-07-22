@@ -119,19 +119,18 @@ class _HomePageState extends State<_HomePage> {
       final data = await ApiService().get('hero-slides');
       final enabled = data['enabled'] as bool? ?? true;
       final slides = (data['data'] as List<dynamic>?) ?? [];
+      final castSlides = slides.cast<Map<String, dynamic>>();
+      // Only show hero if enabled AND there are slides with images
+      final hasRealSlides = castSlides.any((s) => s['image'] != null && (s['image'] as String).isNotEmpty);
       setState(() {
-        _heroEnabled = enabled;
-        if (enabled && slides.isNotEmpty) {
-          _heroSlides = slides.cast<Map<String, dynamic>>();
-        } else if (enabled) {
-          _heroSlides = _defaultSlides;
-        }
+        _heroEnabled = enabled && hasRealSlides;
+        _heroSlides = hasRealSlides ? castSlides : [];
         _heroLoading = false;
       });
     } catch (_) {
       setState(() {
-        _heroEnabled = true;
-        _heroSlides = _defaultSlides;
+        _heroEnabled = false;
+        _heroSlides = [];
         _heroLoading = false;
       });
     }
