@@ -147,8 +147,12 @@ $methodColors = [
                     <td class="px-5 py-3 font-mono text-xs text-gray-500">{{ \Str::limit($payment->tx_id, 14) }}</td>
                     <td class="px-5 py-3">
                         <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-[10px]">
-                                {{ strtoupper(substr($payment->user?->name ?? 'U', 0, 1)) }}
+                            <div class="w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0">
+                                @if($payment->user?->avatar_url)
+                                    <img src="{{ $payment->user->avatar_url }}" alt="{{ $payment->user->name }}" class="w-full h-full object-cover">
+                                @else
+                                    {{ strtoupper(substr($payment->user?->name ?? 'U', 0, 1)) }}
+                                @endif
                             </div>
                             <span class="text-xs text-gray-700">{{ $payment->user?->name ?? 'Unknown' }}</span>
                         </div>
