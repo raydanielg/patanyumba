@@ -25,6 +25,10 @@ Route::get('/app-settings', [SettingController::class, 'appSettings']);
 Route::get('/categories', [SettingController::class, 'categories']);
 Route::get('/regions', [SettingController::class, 'regions']);
 
+// Public FAQ
+Route::get('/faqs', [FaqController::class, 'index']);
+Route::get('/faqs/categories', [FaqController::class, 'categories']);
+
 // Public properties
 Route::get('/properties', [PropertyController::class, 'index']);
 Route::get('/properties/{property}', [PropertyController::class, 'show']);
