@@ -133,20 +133,53 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
             ),
           ),
           flexibleSpace: FlexibleSpaceBar(
-            background: images.isNotEmpty
+            background: allMedia.isNotEmpty
                 ? PageView.builder(
-                    itemCount: images.length,
+                    itemCount: allMedia.length,
                     onPageChanged: (i) => setState(() => _currentImageIndex = i),
                     itemBuilder: (context, index) {
-                      final img = images[index];
-                      final url = img['url'] ?? img['image_url'];
-                      return Image.network(
-                        url ?? '',
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: AppColors.tealGreen50,
-                          child: Icon(Icons.home_outlined, size: 48, color: AppColors.tealGreen),
-                        ),
+                      final media = allMedia[index];
+                      final mediaType = media['media_type'] ?? 'image';
+                      final url = mediaType == 'video'
+                          ? (media['thumbnail_link'] ?? media['image_url'] ?? media['url'])
+                          : (media['url'] ?? media['image_url']);
+                      final videoUrl = mediaType == 'video'
+                          ? (media['video_link'] ?? media['video_url'])
+                          : null;
+                      return Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          if (url != null && url.isNotEmpty)
+                            Image.network(
+                              url,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Container(
+                                color: AppColors.tealGreen50,
+                                child: Icon(Icons.home_outlined, size: 48, color: AppColors.tealGreen),
+                              ),
+                            )
+                          else
+                            Container(
+                              color: AppColors.tealGreen50,
+                              child: Icon(Icons.home_outlined, size: 48, color: AppColors.tealGreen),
+                            ),
+                          if (mediaType == 'video')
+                            Center(
+                              child: GestureDetector(
+                                onTap: () => _playVideo(context, videoUrl),
+                                child: Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.6),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.white, width: 2),
+                                  ),
+                                  child: const Icon(Icons.play_arrow, color: Colors.white, size: 32),
+                                ),
+                              ),
+                            ),
+                        ],
                       );
                     },
                   )
@@ -156,7 +189,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                   ),
           ),
           actions: [
-            if (images.isNotEmpty)
+            if (allMedia.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: Center(
@@ -167,7 +200,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      '${_currentImageIndex + 1}/${images.length}',
+                      '${_currentImageIndex + 1}/${allMedia.length}',
                       style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
                     ),
                   ),
