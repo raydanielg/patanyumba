@@ -94,4 +94,64 @@ class SettingController extends Controller
             'data' => $regions,
         ]);
     }
+
+    public function allRegions()
+    {
+        $regions = Region::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'code']);
+
+        return response()->json([
+            'success' => true,
+            'data' => $regions,
+        ]);
+    }
+
+    public function districts($regionId)
+    {
+        $region = Region::where('is_active', true)->find($regionId);
+        if (!$region) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Region not found',
+            ], 404);
+        }
+
+        $districts = $region->districts()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'region_id']);
+
+        return response()->json([
+            'success' => true,
+            'data' => $districts,
+        ]);
+    }
+
+    public function regionsWithDistricts()
+    {
+        $regions = Region::where('is_active', true)
+            ->with(['districts' => function ($q) {
+                $q->where('is_active', true)->orderBy('sort_order')->orderBy('name');
+            }])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $regions->map(function ($region) {
+                return [
+                    'id' => $region->id,
+                    'name' => $region->name,
+                    'code' => $region->code,
+                    'districts' => $region->districts->map(function ($d) {
+                        return ['id' => $d->id, 'name' => $d->name];
+                    }),
+                ];
+            }),
+        ]);
+    }
 }
