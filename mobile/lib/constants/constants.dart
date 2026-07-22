@@ -7,7 +7,7 @@ class AppConstants {
   // Use 10.0.2.2 for Android emulator (maps to host localhost)
   // Use localhost for iOS simulator or web
   // Use your actual server IP for physical devices
-  static const String baseUrl = 'http://10.0.2.2:8000/api';
+  static const String baseUrl = 'http://192.168.1.136:8081/api';
   static const Duration apiTimeout = Duration(seconds: 30);
 
   // Storage Keys
