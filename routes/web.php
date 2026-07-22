@@ -96,4 +96,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     Route::post('/categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
     Route::post('/categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
+
+    // FAQ Management
+    Route::get('/faqs', [FaqController::class, 'index'])->name('faqs');
+    Route::get('/faqs/create', [FaqController::class, 'create'])->name('faqs.create');
+    Route::post('/faqs', [FaqController::class, 'store'])->name('faqs.store');
+    Route::get('/faqs/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit');
+    Route::put('/faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
+    Route::delete('/faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
+
+    // Support Chat
+    Route::get('/support', [SupportChatController::class, 'index'])->name('support');
+    Route::get('/support/{chat}', [SupportChatController::class, 'show'])->name('support.show');
+    Route::post('/support/{chat}/reply', [SupportChatController::class, 'reply'])->name('support.reply');
+    Route::post('/support/{chat}/close', [SupportChatController::class, 'closeChat'])->name('support.close');
 });
