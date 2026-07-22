@@ -207,6 +207,18 @@
                         <span class="text-gray-400 text-xs">Joined</span>
                         <span class="text-xs text-gray-700">{{ $user->created_at->format('d M Y') }}</span>
                     </div>
+                    @if($user->region)
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400 text-xs">Mkoa</span>
+                        <span class="text-xs font-medium text-gray-700">{{ $user->region }}</span>
+                    </div>
+                    @endif
+                    @if($user->district)
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400 text-xs">Wilaya</span>
+                        <span class="text-xs font-medium text-gray-700">{{ $user->district }}</span>
+                    </div>
+                    @endif
                 </div>
             </div>
 
