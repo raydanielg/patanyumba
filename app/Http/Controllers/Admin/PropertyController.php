@@ -87,6 +87,12 @@ class PropertyController extends Controller
         return back()->with('status', 'Property created successfully');
     }
 
+    public function showUnit(Property $property, $unitId)
+    {
+        $unit = $property->units()->findOrFail($unitId);
+        return response()->json(['success' => true, 'unit' => $unit]);
+    }
+
     public function storeUnit(Request $request, Property $property)
     {
         $validated = $request->validate([
