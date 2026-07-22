@@ -121,19 +121,29 @@ class _HomePageState extends State<_HomePage> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: Row(
-          children: [
-            Image.asset('assets/logo/whitelogo.png', width: 32, height: 32),
-            const SizedBox(width: 10),
-            const Text(
-              AppConstants.appName,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Row(
+            children: [
+              Image.asset('assets/logo/whitelogo.png', width: 30, height: 30),
+              const SizedBox(width: 10),
+              const Text(
+                AppConstants.appName,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, size: 24),
+            onPressed: () {},
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -141,7 +151,45 @@ class _HomePageState extends State<_HomePage> {
           children: [
             // Hero Carousel
             _buildHeroCarousel(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
+            // Search bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
+                onTap: () {},
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.search, size: 20, color: AppColors.textHint),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Search for properties, locations...',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textHint,
+                          ),
+                        ),
+                      ),
+                      Icon(Icons.tune, size: 20, color: AppColors.tealGreen),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             // Categories
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
