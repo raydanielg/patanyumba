@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -26,6 +27,35 @@ class SettingController extends Controller
             return response()->json(['success' => true, 'message' => 'Settings updated successfully']);
         }
         return back()->with('status', 'Settings updated');
+    }
+
+    public function uploadHeroImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'slide' => 'required|integer|in:1,2,3,4,5',
+        ]);
+
+        $slide = $request->slide;
+        $file = $request->file('image');
+        $path = $file->store('hero', 'public');
+
+        $url = Storage::url($path);
+
+        Setting::updateOrCreate(
+            ['key' => "hero_image_$slide"],
+            ['value' => $url, 'group' => 'hero']
+        );
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Hero slide $slide image uploaded",
+                'url' => $url,
+            ]);
+        }
+
+        return back()->with('status', "Hero slide $slide image uploaded");
     }
 
     public function toggle(Request $request)
