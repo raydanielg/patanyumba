@@ -491,6 +491,133 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                   const SizedBox(height: 24),
                 ],
 
+                // Recommended Properties
+                if (_recommended.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Recommended Properties',
+                    style: GoogleFonts.nunito(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _recommended.length,
+                      itemBuilder: (context, index) {
+                        final p = _recommended[index];
+                        final imgs = p['images'] as List<dynamic>?;
+                        String? imgUrl;
+                        if (imgs != null && imgs.isNotEmpty) {
+                          final img = imgs[0] as Map<String, dynamic>;
+                          imgUrl = img['url'] ?? img['image_url'];
+                        }
+                        final pTitle = p['title'] ?? 'Untitled';
+                        final pLocation = '${p['region'] ?? ''}, ${p['district'] ?? ''}';
+                        final pPrice = p['price'];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PropertyDetailScreen(propertyId: p['id'] as int),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 160,
+                            margin: const EdgeInsets.only(right: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: AppColors.tealGreen100),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      width: double.infinity,
+                                      color: AppColors.tealGreen50,
+                                      child: imgUrl != null && imgUrl.isNotEmpty
+                                          ? Image.network(
+                                              imgUrl,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => Center(
+                                                child: Icon(Icons.home_outlined, size: 28, color: AppColors.tealGreen),
+                                              ),
+                                            )
+                                          : Center(
+                                              child: Icon(Icons.home_outlined, size: 28, color: AppColors.tealGreen),
+                                            ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            pTitle,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.nunito(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppColors.textPrimary,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.location_on, size: 10, color: AppColors.textHint),
+                                              const SizedBox(width: 2),
+                                              Expanded(
+                                                child: Text(
+                                                  pLocation,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.nunito(
+                                                    fontSize: 10,
+                                                    color: AppColors.textSecondary,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const Spacer(),
+                                          if (pPrice != null)
+                                            Text(
+                                              _formatPrice(pPrice),
+                                              style: GoogleFonts.nunito(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w700,
+                                                color: AppColors.tealGreen,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: 80),
               ],
             ),
