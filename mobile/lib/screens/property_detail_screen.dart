@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:video_player/video_player.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constants/colors.dart';
 import '../services/api_service.dart';
 
