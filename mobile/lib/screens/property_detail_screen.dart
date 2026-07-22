@@ -525,32 +525,33 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     );
   }
 
-  Widget _buildDetailCard(IconData icon, String label, String value) {
+  Widget _buildDetailChip(IconData icon, String label, String value) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.tealGreen100),
+        color: AppColors.tealGreen50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.tealGreen100, width: 1),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 24, color: AppColors.tealGreen),
-          const SizedBox(height: 6),
+          Icon(icon, size: 16, color: AppColors.tealGreen),
+          const SizedBox(width: 6),
+          Text(
+            '$label: ',
+            style: GoogleFonts.nunito(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondary,
+            ),
+          ),
           Text(
             value,
             style: GoogleFonts.nunito(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: GoogleFonts.nunito(
-              fontSize: 11,
-              color: AppColors.textHint,
             ),
           ),
         ],
