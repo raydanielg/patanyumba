@@ -14,6 +14,17 @@ class AppConstants {
   static const String tokenKey = 'auth_token';
   static const String userKey = 'user_data';
   static const String onboardingKey = 'onboarding_complete';
+  static const String themeKey = 'theme_mode'; // light, dark, system
+  static const String languageKey = 'app_language'; // en, sw
+  static const String regionKey = 'preferred_region';
+  static const String notifPushKey = 'notif_push_enabled';
+  static const String notifEmailKey = 'notif_email_enabled';
+  static const String notifSmsKey = 'notif_sms_enabled';
+  static const String notifNewPropKey = 'notif_new_props';
+  static const String notifPriceDropKey = 'notif_price_drop';
+  static const String notifKycKey = 'notif_kyc_updates';
+  static const String notifSubKey = 'notif_subscription';
+  static const String cacheKey = 'clear_cache_flag';
 
   // Animation
   static const Duration splashDuration = Duration(seconds: 3);
