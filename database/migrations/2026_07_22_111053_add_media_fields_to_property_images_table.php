@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('property_images', function (Blueprint $table) {
-            //
+            $table->string('media_type')->default('image')->after('property_id');
+            $table->string('video_url')->nullable()->after('image_path');
+            $table->string('thumbnail_url')->nullable()->after('thumbnail_path');
         });
     }
 
@@ -22,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('property_images', function (Blueprint $table) {
-            //
+            $table->dropColumn(['media_type', 'video_url', 'thumbnail_url']);
         });
     }
 };
