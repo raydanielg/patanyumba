@@ -20,6 +20,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 // Public settings
 Route::get('/hero-slides', [SettingController::class, 'heroSlides']);
 Route::get('/app-settings', [SettingController::class, 'appSettings']);
+Route::get('/categories', [SettingController::class, 'categories']);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
