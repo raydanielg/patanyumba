@@ -48,6 +48,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/properties/{property}/approve', [PropertyController::class, 'approve'])->name('properties.approve');
     Route::post('/properties/{property}/reject', [PropertyController::class, 'reject'])->name('properties.reject');
     Route::post('/properties/{property}/toggle-featured', [PropertyController::class, 'toggleFeatured'])->name('properties.toggle-featured');
+    Route::post('/properties/{property}/units', [PropertyController::class, 'storeUnit'])->name('properties.units.store');
+    Route::put('/properties/{property}/units/{unitId}', [PropertyController::class, 'updateUnit'])->name('properties.units.update');
+    Route::delete('/properties/{property}/units/{unitId}', [PropertyController::class, 'destroyUnit'])->name('properties.units.destroy');
 
     Route::get('/kyc', [KycController::class, 'index'])->name('kyc');
     Route::post('/kyc', [KycController::class, 'store'])->name('kyc.store');
