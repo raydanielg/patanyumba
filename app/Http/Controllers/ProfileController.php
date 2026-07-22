@@ -24,6 +24,8 @@ class ProfileController extends Controller
             'phone' => 'nullable|string|max:20',
             'business_name' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
+            'region' => 'nullable|string|max:100',
+            'district' => 'nullable|string|max:100',
         ]);
 
         $user->update($validated);

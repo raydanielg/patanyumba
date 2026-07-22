@@ -36,6 +36,8 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,landlord,agent,tenant',
+            'region' => 'nullable|string|max:100',
+            'district' => 'nullable|string|max:100',
         ]);
 
         $validated['password'] = \Hash::make($validated['password']);
