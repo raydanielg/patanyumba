@@ -624,5 +624,66 @@ document.querySelectorAll('.save-btn').forEach(btn => {
         this.disabled = false;
     });
 });
+// Hero image upload (AJAX)
+async function uploadHero(slide, input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const uploading = document.getElementById('heroUploading' + slide);
+    const preview = document.getElementById('heroPreview' + slide);
+    const placeholder = document.getElementById('heroPlaceholder' + slide);
+    const removeBtn = document.getElementById('heroRemoveBtn' + slide);
+
+    uploading.classList.remove('hidden');
+
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('slide', slide);
+
+    try {
+        const res = await fetch('{{ route("admin.settings.hero-upload") }}', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+            body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById('heroImg' + slide).src = data.url;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            removeBtn.classList.remove('hidden');
+            showToast(data.message);
+        } else {
+            showToast(data.message || 'Upload failed', 'error');
+        }
+    } catch (e) {
+        showToast('Network error', 'error');
+    }
+
+    uploading.classList.add('hidden');
+    input.value = '';
+}
+
+// Remove hero image (AJAX)
+async function removeHero(slide) {
+    const preview = document.getElementById('heroPreview' + slide);
+    const placeholder = document.getElementById('heroPlaceholder' + slide);
+    const removeBtn = document.getElementById('heroRemoveBtn' + slide);
+
+    try {
+        const res = await fetch('{{ route("admin.settings.update") }}', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ['hero_image_' + slide]: '' })
+        });
+        const data = await res.json();
+        if (data.success) {
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            removeBtn.classList.add('hidden');
+            showToast('Hero slide ' + slide + ' image removed');
+        }
+    } catch { showToast('Network error', 'error'); }
+}
 </script>
 @endsection
