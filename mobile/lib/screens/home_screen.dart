@@ -157,7 +157,7 @@ class _HomePageState extends State<_HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () => _openSearch(context),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
