@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import 'categories_screen.dart';
 import 'category_properties_screen.dart';
 import 'property_detail_screen.dart';
