@@ -1645,7 +1645,12 @@ class _ProfilePageState extends State<_ProfilePage> {
               );
             }),
             _buildMenuDivider(),
-            _buildMenuTile(Icons.help_outline, 'Help & Support', 'Get help and contact us', () {}),
+            _buildMenuTile(Icons.help_outline, 'Help & Support', 'FAQs and live chat with support', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HelpSupportScreen()),
+              );
+            }),
             _buildMenuDivider(),
             _buildMenuTile(Icons.info_outline, 'About ${AppConstants.appName}', 'App version and information', () {}),
           ],
