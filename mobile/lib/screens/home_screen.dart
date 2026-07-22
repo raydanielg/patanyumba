@@ -65,31 +65,33 @@ class _HomePage extends StatefulWidget {
 class _HomePageState extends State<_HomePage> {
   final PageController _heroController = PageController();
   int _currentHeroPage = 0;
-  late Timer _heroTimer;
+  Timer? _heroTimer;
+  List<Map<String, dynamic>> _heroSlides = [];
+  bool _heroLoading = true;
 
-  final List<Map<String, dynamic>> _heroSlides = [
+  final List<Map<String, dynamic>> _defaultSlides = [
     {
-      'image': 'assets/images/hero1.jpg',
+      'image': null,
       'title': 'Find Your Perfect Home',
       'subtitle': 'Browse thousands of verified listings',
     },
     {
-      'image': 'assets/images/hero2.jpg',
+      'image': null,
       'title': 'Verified Properties',
       'subtitle': 'Every listing is checked and trusted',
     },
     {
-      'image': 'assets/images/hero3.jpg',
+      'image': null,
       'title': 'Rent with Confidence',
       'subtitle': 'From apartments to houses, we have it all',
     },
     {
-      'image': 'assets/images/hero4.jpg',
+      'image': null,
       'title': 'Move In Faster',
       'subtitle': 'Connect directly with landlords',
     },
     {
-      'image': 'assets/images/hero5.jpg',
+      'image': null,
       'title': 'Your Dream Home Awaits',
       'subtitle': 'Start your search today',
     },
@@ -98,8 +100,9 @@ class _HomePageState extends State<_HomePage> {
   @override
   void initState() {
     super.initState();
+    _fetchHeroSlides();
     _heroTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-      if (_heroController.hasClients) {
+      if (_heroController.hasClients && _heroSlides.length > 1) {
         int next = (_currentHeroPage + 1) % _heroSlides.length;
         _heroController.animateToPage(
           next,
@@ -108,6 +111,29 @@ class _HomePageState extends State<_HomePage> {
         );
       }
     });
+  }
+
+  Future<void> _fetchHeroSlides() async {
+    try {
+      final data = await ApiService().get('hero-slides');
+      final slides = (data['data'] as List<dynamic>?) ?? [];
+      if (slides.isNotEmpty) {
+        setState(() {
+          _heroSlides = slides.cast<Map<String, dynamic>>();
+          _heroLoading = false;
+        });
+      } else {
+        setState(() {
+          _heroSlides = _defaultSlides;
+          _heroLoading = false;
+        });
+      }
+    } catch (_) {
+      setState(() {
+        _heroSlides = _defaultSlides;
+        _heroLoading = false;
+      });
+    }
   }
 
   @override
