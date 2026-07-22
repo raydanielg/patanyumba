@@ -8,6 +8,7 @@ import 'screens/register_screen.dart';
 import 'screens/forgot_password_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const PatanyumbaApp());
 }
 
