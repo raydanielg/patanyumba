@@ -26,9 +26,14 @@ $methodLabels = [
     'visa' => 'Visa', 'mastercard' => 'Mastercard',
 ];
 $methodIcons = [
-    'cash' => '💵', 'mpesa' => '📱', 'airtel_money' => '📲',
-    'mixx_yas' => '💳', 'halopesa' => '🏦', 'tpesa' => '📞',
-    'visa' => '💳', 'mastercard' => '💳',
+    'cash' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2-4h10a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6a2 2 0 012-2zm7 5a1 1 0 11-2 0 1 1 0 012 0z"/>',
+    'mpesa' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2zm3 18h4M7 6h10v8H7V6z"/>',
+    'airtel_money' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2zm3 18h4M7 6h10v8H7V6z"/>',
+    'mixx_yas' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>',
+    'halopesa' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>',
+    'tpesa' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>',
+    'visa' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>',
+    'mastercard' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>',
 ];
 $methodColors = [
     'cash' => 'bg-gray-50 text-gray-700 border-gray-200',
@@ -151,7 +156,7 @@ $methodColors = [
                     <td class="px-5 py-3"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium capitalize bg-gray-50 text-gray-700 border border-gray-100">{{ $payment->payment_type }}</span></td>
                     <td class="px-5 py-3">
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border {{ $methodColors[$payment->method] ?? 'bg-gray-50 text-gray-700 border-gray-200' }}">
-                            <span>{{ $methodIcons[$payment->method] ?? '💳' }}</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $methodIcons[$payment->method] ?? $methodIcons['cash'] !!}</svg>
                             {{ $methodLabels[$payment->method] ?? str_replace('_', ' ', $payment->method) }}
                         </span>
                     </td>
@@ -251,7 +256,7 @@ $methodColors = [
                         @foreach($methodLabels as $val => $label)
                         <label class="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-gray-200 cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/50 transition-all method-label" data-method="{{ $val }}">
                             <input type="radio" name="method" value="{{ $val }}" required class="w-3.5 h-3.5 text-emerald-600 focus:ring-emerald-500 method-radio">
-                            <span class="text-base">{{ $methodIcons[$val] }}</span>
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $methodIcons[$val] !!}</svg>
                             <span class="text-xs font-medium text-gray-700">{{ $label }}</span>
                         </label>
                         @endforeach
