@@ -8,8 +8,12 @@
     {{-- User Info --}}
     <div class="bg-white rounded-xl border p-5">
         <div class="flex items-center gap-4 mb-4">
-            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white font-bold text-xl">
-                {{ strtoupper(substr($user->name, 0, 1)) }}
+            <div class="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+                @if($user->avatar_url)
+                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                @else
+                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                @endif
             </div>
             <div>
                 <h2 class="text-lg font-bold text-gray-900">{{ $user->name }}</h2>
