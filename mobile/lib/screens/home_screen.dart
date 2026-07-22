@@ -138,7 +138,7 @@ class _HomePageState extends State<_HomePage> {
 
   @override
   void dispose() {
-    _heroTimer.cancel();
+    _heroTimer?.cancel();
     _heroController.dispose();
     super.dispose();
   }
