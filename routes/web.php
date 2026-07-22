@@ -49,7 +49,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/kyc/{document}/reject', [KycController::class, 'reject'])->name('kyc.reject');
 
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments');
+    Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
     Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+    Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+    Route::post('/payments/bulk-delete', [PaymentController::class, 'bulkDestroy'])->name('payments.bulk-delete');
+    Route::post('/payments/{payment}/status', [PaymentController::class, 'updateStatus'])->name('payments.status');
 
     Route::get('/subscriptions/plans', [SubscriptionController::class, 'plans'])->name('subscriptions.plans');
     Route::post('/subscriptions/plans', [SubscriptionController::class, 'storePlan'])->name('subscriptions.plans.store');
