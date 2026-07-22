@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return redirect()->route('login');
