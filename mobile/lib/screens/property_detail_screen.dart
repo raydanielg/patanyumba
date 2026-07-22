@@ -692,36 +692,203 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   }
 
   void _showContactDialog(BuildContext context, String phone, String owner) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Contact Owner', style: GoogleFonts.nunito(fontWeight: FontWeight.w700)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Owner: $owner', style: GoogleFonts.nunito(fontSize: 14, color: AppColors.textSecondary)),
-            const SizedBox(height: 8),
-            if (phone.isNotEmpty)
-              Text('Phone: $phone', style: GoogleFonts.nunito(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.tealGreen))
-            else
-              Text('No contact number available', style: GoogleFonts.nunito(fontSize: 14, color: AppColors.textHint)),
-          ],
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
-        actions: [
-          if (phone.isNotEmpty)
-            TextButton(
-              onPressed: () {
-                // TODO: Launch phone dialer
-                Navigator.pop(ctx);
-              },
-              child: const Text('Call Now'),
-            ),
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
-        ],
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 34),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              CircleAvatar(
+                radius: 32,
+                backgroundColor: AppColors.tealGreen50,
+                child: Icon(Icons.person, size: 36, color: AppColors.tealGreen),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                owner,
+                style: GoogleFonts.nunito(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              if (phone.isNotEmpty)
+                Text(
+                  phone,
+                  style: GoogleFonts.nunito(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                )
+              else
+                Text(
+                  'No contact number available',
+                  style: GoogleFonts.nunito(
+                    fontSize: 14,
+                    color: AppColors.textHint,
+                  ),
+                ),
+              const SizedBox(height: 24),
+              if (phone.isNotEmpty) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildCallOption(
+                        context: context,
+                        icon: Icons.phone_in_talk,
+                        title: 'Call Online',
+                        subtitle: 'Call through the app',
+                        color: AppColors.tealGreen,
+                        onTap: () {
+                          Navigator.pop(context);
+                          _startOnlineCall(context, phone, owner);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildCallOption(
+                        context: context,
+                        icon: Icons.dialer_sip,
+                        title: 'Call Offline',
+                        subtitle: 'Use phone dialer',
+                        color: const Color(0xFF2196F3),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _startOfflineCall(context, phone);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Online calls are logged in the system. Offline calls use your phone\'s dialer.',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.nunito(
+                    fontSize: 11,
+                    color: AppColors.textHint,
+                  ),
+                ),
+              ],
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.nunito(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  Widget _buildCallOption({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: Colors.white, size: 22),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: GoogleFonts.nunito(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                fontSize: 10,
+                color: AppColors.textHint,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _startOnlineCall(BuildContext context, String phone, String owner) {
+    _logCall('online', phone);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => _InAppCallScreen(
+          phone: phone,
+          ownerName: owner,
+          propertyId: widget.propertyId,
+        ),
+      ),
+    );
+  }
+
+  void _startOfflineCall(BuildContext context, String phone) async {
+    _logCall('offline', phone);
+    final uri = Uri.parse('tel:$phone');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  Future<void> _logCall(String callType, String phone) async {
+    try {
+      await ApiService().post(
+        'properties/${widget.propertyId}/call',
+        {'call_type': callType, 'contact_phone': phone},
+      );
+    } catch (_) {}
   }
 
   void _showAvailabilityDialog(BuildContext context, bool isAvailable) {
