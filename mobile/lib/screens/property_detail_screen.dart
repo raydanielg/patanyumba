@@ -246,6 +246,20 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                   ),
           ),
           actions: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: CircleAvatar(
+                backgroundColor: Colors.black.withValues(alpha: 0.4),
+                child: IconButton(
+                  icon: Icon(
+                    _isFavorited ? Icons.favorite : Icons.favorite_border,
+                    color: _isFavorited ? Colors.redAccent : Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: _toggleFavorite,
+                ),
+              ),
+            ),
             if (allMedia.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(right: 12),
