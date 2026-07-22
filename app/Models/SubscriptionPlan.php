@@ -8,7 +8,7 @@ class SubscriptionPlan extends Model
 {
     protected $fillable = [
         'name', 'slug', 'description', 'price', 'currency',
-        'billing_cycle', 'unlock_limit', 'is_active', 'features',
+        'billing_cycle', 'target_audience', 'unlock_limit', 'is_active', 'features',
     ];
 
     protected $casts = [

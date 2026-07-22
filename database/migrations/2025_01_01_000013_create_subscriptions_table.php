@@ -16,6 +16,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->string('currency', 3)->default('TZS');
             $table->enum('billing_cycle', ['one_time', 'weekly', 'monthly', 'quarterly', 'yearly']);
+            $table->enum('target_audience', ['house_hunter', 'agent', 'both'])->default('both');
             $table->integer('unlock_limit')->nullable();
             $table->boolean('is_active')->default(true);
             $table->json('features')->nullable();
