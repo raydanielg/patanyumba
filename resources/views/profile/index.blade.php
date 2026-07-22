@@ -99,6 +99,57 @@
                         <label class="block text-xs font-semibold text-gray-700 mb-1.5">Business Name</label>
                         <input type="text" name="business_name" value="{{ $user->business_name ?? '' }}" placeholder="Optional" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
                     </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Mkoa (Region)</label>
+                        <select name="region" id="profileRegion" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
+                            <option value="">-- Chagua Mkoa --</option>
+                            @php
+                            $tanzaniaRegions = [
+                                'Dar es Salaam' => ['Ilala', 'Kinondoni', 'Temeke', 'Kigamboni', 'Ubungo'],
+                                'Dodoma' => ['Dodoma Urban', 'Bahi', 'Chamwino', 'Chemba', 'Kondoa', 'Kongwa', 'Mpwapwa'],
+                                'Arusha' => ['Arusha Urban', 'Arumeru', 'Karatu', 'Longido', 'Monduli', 'Ngorongoro'],
+                                'Mwanza' => ['Ilemela', 'Nyamagana', 'Geita', 'Kwimba', 'Magu', 'Misungwi', 'Sengerema', 'Ukerewe'],
+                                'Tanga' => ['Tanga Urban', 'Handeni', 'Kilindi', 'Korogwe', 'Lushoto', 'Mkinga', 'Muheza', 'Pangani'],
+                                'Kilimanjaro' => ['Moshi Urban', 'Hai', 'Mwanga', 'Rombo', 'Same', 'Siha'],
+                                'Morogoro' => ['Morogoro Urban', 'Gairo', 'Ifakara', 'Kilombero', 'Kilosa', 'Mahenge', 'Malinyi', 'Mvomero', 'Ulanga'],
+                                'Mbeya' => ['Mbeya Urban', 'Chunya', 'Ileje', 'Kyela', 'Mbarali', 'Mbozi', 'Rungwe'],
+                                'Zanzibar' => ['Mjini Magharibi', 'Kaskazini A', 'Kaskazini B', 'Kusini', 'Kati', 'Kusini Unguja'],
+                                'Pwani' => ['Bagamoyo', 'Kibaha', 'Kisarawe', 'Mafia', 'Mkuranga', 'Rufiji'],
+                                'Kagera' => ['Bukoba Urban', 'Bukoba Rural', 'Biharamulo', 'Karagwe', 'Kyerwa', 'Muleba', 'Ngara'],
+                                'Tabora' => ['Tabora Urban', 'Igunga', 'Kaliua', 'Nzega', 'Sikonge', 'Urambo'],
+                                'Rukwa' => ['Sumbawanga Urban', 'Kalambo', 'Lyamba Lya Mfipa', 'Nkasi', 'Sumbawanga Rural'],
+                                'Kigoma' => ['Kigoma Urban', 'Buhigwe', 'Kakonko', 'Kasulu', 'Kibondo', 'Uvinza'],
+                                'Shinyanga' => ['Shinyanga Urban', 'Kahama', 'Kishapu', 'Shinyanga Rural'],
+                                'Singida' => ['Singida Urban', 'Iramba', 'Manyoni', 'Mkalama', 'Singida Rural'],
+                                'Iringa' => ['Iringa Urban', 'Iringa Rural', 'Kilolo', 'Ludewa', 'Makete', 'Mufindi', 'Njombe'],
+                                'Ruvuma' => ['Songea Urban', 'Mbinga', 'Namtumbo', 'Nyasa', 'Songea Rural', 'Tunduru'],
+                                'Mara' => ['Musoma Urban', 'Bunda', 'Butiama', 'Musoma Rural', 'Rorya', 'Serengeti', 'Tarime'],
+                                'Lindi' => ['Lindi Urban', 'Kilwa', 'Lindi Rural', 'Liwale', 'Nachingwea', 'Ruangwa'],
+                                'Mtwara' => ['Mtwara Urban', 'Masasi', 'Mtwara Rural', 'Nanyamba', 'Newala', 'Tandahimba'],
+                                'Geita' => ['Geita Urban', 'Bukombe', 'Chato', 'Geita Rural', 'Mbogwe', 'Nyang\'hwale'],
+                                'Njombe' => ['Njombe Urban', 'Ludewa', 'Makete', 'Njombe Rural', 'Wanging\'ombe'],
+                                'Simiyu' => ['Bariadi', 'Busega', 'Itilima', 'Meatu', 'Simiyu'],
+                                'Katavi' => ['Mpanda Urban', 'Mlele', 'Mpanda Rural', 'Nsimbo', 'Palahali'],
+                                'Songwe' => ['Mbeya Urban', 'Ileje', 'Mbozi', 'Momba', 'Songwe'],
+                                'Manyara' => ['Babati Urban', 'Babati Rural', 'Hanang', 'Kiteto', 'Mbulu', 'Simanjiro'],
+                            ];
+                            @endphp
+                            @foreach($tanzaniaRegions as $regionName => $districts)
+                            <option value="{{ $regionName }}" @if($user->region === $regionName) selected @endif>{{ $regionName }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Wilaya (District)</label>
+                        <select name="district" id="profileDistrict" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" @if(!$user->region) disabled @endif>
+                            <option value="">-- Chagua Wilaya --</option>
+                            @if($user->region && isset($tanzaniaRegions[$user->region]))
+                                @foreach($tanzaniaRegions[$user->region] as $d)
+                                <option value="{{ $d }}" @if($user->district === $d) selected @endif>{{ $d }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
                     <div class="sm:col-span-2">
                         <label class="block text-xs font-semibold text-gray-700 mb-1.5">Address</label>
                         <textarea name="address" rows="2" placeholder="Your physical address" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">{{ $user->address ?? '' }}</textarea>
