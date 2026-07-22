@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../services/api_service.dart';
+import 'categories_screen.dart';
+import 'category_properties_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -212,7 +214,12 @@ class _HomePageState extends State<_HomePage> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const CategoriesScreen()),
+                            );
+                          },
                           child: Row(
                             children: [
                               Text(
@@ -242,6 +249,7 @@ class _HomePageState extends State<_HomePage> {
                             cat['name'] as String? ?? '',
                             cat['image'] as String?,
                             cat['icon'] as String?,
+                            cat['id'] as int,
                           );
                         },
                       ),
