@@ -151,7 +151,7 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
-        $property->load('user', 'images', 'reviews', 'payments');
+        $property->load('user', 'images', 'reviews', 'payments', 'units');
         return view('admin.properties.show', compact('property'));
     }
 
