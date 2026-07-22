@@ -156,36 +156,20 @@ class _HomePageState extends State<_HomePage> {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 1.5,
-                    children: [
-                      _buildCategoryCard(
-                        Icons.home_work_outlined,
-                        'Houses',
-                        'For Rent',
-                      ),
-                      _buildCategoryCard(
-                        Icons.apartment_outlined,
-                        'Apartments',
-                        'For Rent',
-                      ),
-                      _buildCategoryCard(
-                        Icons.bed_outlined,
-                        'Rooms',
-                        'For Rent',
-                      ),
-                      _buildCategoryCard(
-                        Icons.store_outlined,
-                        'Commercial',
-                        'For Rent',
-                      ),
-                    ],
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 40,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        _buildCategoryChip(Icons.home_work_outlined, 'Houses'),
+                        _buildCategoryChip(Icons.apartment_outlined, 'Apartments'),
+                        _buildCategoryChip(Icons.bed_outlined, 'Rooms'),
+                        _buildCategoryChip(Icons.store_outlined, 'Commercial'),
+                        _buildCategoryChip(Icons.business_outlined, 'Office'),
+                        _buildCategoryChip(Icons.landscape_outlined, 'Land'),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 24),
                   // Featured
