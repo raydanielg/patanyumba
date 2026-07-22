@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\Category;
 
 class SettingController extends Controller
 {
@@ -52,6 +53,28 @@ class SettingController extends Controller
         return response()->json([
             'success' => true,
             'data' => $data,
+        ]);
+    }
+
+    public function categories()
+    {
+        $categories = Category::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($cat) {
+                return [
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                    'icon' => $cat->icon,
+                    'image' => $cat->image ? url($cat->image) : null,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $categories,
         ]);
     }
 }
