@@ -218,7 +218,7 @@ async function submitCategory(e) {
     const file = document.getElementById('categoryImage').files[0];
     if (file) formData.append('image', file);
 
-    const url = id ? '{{ route("admin.categories.update", "") }}/' + id : '{{ route("admin.categories.store") }}';
+    const url = id ? '{{ route("admin.categories.update", ["category" => ":ID"]) }}'.replace(':ID', id) : '{{ route("admin.categories.store") }}';
     const method = id ? 'POST' : 'POST';
     if (id) formData.append('_method', 'PUT');
 
@@ -246,7 +246,7 @@ async function submitCategory(e) {
 async function deleteCategory(id) {
     if (!confirm('Delete this category?')) return;
     try {
-        const res = await fetch('{{ route("admin.categories.destroy", "") }}/' + id, {
+        const res = await fetch('{{ route("admin.categories.destroy", ["category" => ":ID"]) }}'.replace(':ID', id), {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify({ _method: 'DELETE' })
@@ -261,7 +261,7 @@ async function deleteCategory(id) {
 
 async function toggleCategory(id, btn) {
     try {
-        const res = await fetch('{{ route("admin.categories.toggle", "") }}/' + id, {
+        const res = await fetch('{{ route("admin.categories.toggle", ["category" => ":ID"]) }}'.replace(':ID', id), {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: JSON.stringify({})
