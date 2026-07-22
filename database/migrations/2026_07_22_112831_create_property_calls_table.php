@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('property_calls', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('property_id')->constrained()->onDelete('cascade');
+            $table->foreignId('caller_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('receiver_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->string('call_type')->default('offline'); // online, offline
+            $table->string('status')->default('initiated'); // initiated, connected, missed, failed
+            $table->integer('duration_seconds')->default(0);
+            $table->string('contact_phone')->nullable();
             $table->timestamps();
         });
     }
