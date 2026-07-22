@@ -886,7 +886,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     try {
       await ApiService().post(
         'properties/${widget.propertyId}/call',
-        {'call_type': callType, 'contact_phone': phone},
+        body: {'call_type': callType, 'contact_phone': phone},
       );
     } catch (_) {}
   }
