@@ -327,7 +327,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icons.groups_outlined,
               title: 'About PataNyumba',
               subtitle: 'Learn more about us',
-              onTap: () => _showAboutDialog(),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AboutScreen()),
+                );
+              },
             ),
           ]),
           const SizedBox(height: 32),
