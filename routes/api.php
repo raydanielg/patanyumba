@@ -48,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::put('/user/profile', [AuthController::class, 'updateProfile']);
     Route::put('/user/password', [AuthController::class, 'changePassword']);
+    Route::post('/user/become-landlord', [AuthController::class, 'becomeLandlord']);
+    Route::get('/user/kyc-status', [AuthController::class, 'myKycStatus']);
 
     // Properties (authenticated actions)
     Route::post('/properties', [PropertyController::class, 'store']);
