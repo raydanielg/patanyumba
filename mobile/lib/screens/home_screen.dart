@@ -70,34 +70,6 @@ class _HomePageState extends State<_HomePage> {
   bool _heroLoading = true;
   bool _heroEnabled = true;
 
-  final List<Map<String, dynamic>> _defaultSlides = [
-    {
-      'image': null,
-      'title': 'Find Your Perfect Home',
-      'subtitle': 'Browse thousands of verified listings',
-    },
-    {
-      'image': null,
-      'title': 'Verified Properties',
-      'subtitle': 'Every listing is checked and trusted',
-    },
-    {
-      'image': null,
-      'title': 'Rent with Confidence',
-      'subtitle': 'From apartments to houses, we have it all',
-    },
-    {
-      'image': null,
-      'title': 'Move In Faster',
-      'subtitle': 'Connect directly with landlords',
-    },
-    {
-      'image': null,
-      'title': 'Your Dream Home Awaits',
-      'subtitle': 'Start your search today',
-    },
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -169,9 +141,11 @@ class _HomePageState extends State<_HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hero Carousel (hidden if disabled in settings)
-            if (_heroEnabled) _buildHeroCarousel(),
-            const SizedBox(height: 16),
+            // Hero Carousel (hidden if disabled or no slides with images)
+            if (_heroEnabled) ...[
+              _buildHeroCarousel(),
+              const SizedBox(height: 16),
+            ],
             // Search bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -306,15 +280,6 @@ class _HomePageState extends State<_HomePage> {
   }
 
   Widget _buildHeroCarousel() {
-    if (_heroLoading) {
-      return SizedBox(
-        height: 220,
-        child: Center(
-          child: CircularProgressIndicator(color: AppColors.tealGreen),
-        ),
-      );
-    }
-
     return SizedBox(
       height: 220,
       child: Stack(
