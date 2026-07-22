@@ -111,4 +111,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/support/{chat}', [SupportChatController::class, 'show'])->name('support.show');
     Route::post('/support/{chat}/reply', [SupportChatController::class, 'reply'])->name('support.reply');
     Route::post('/support/{chat}/close', [SupportChatController::class, 'closeChat'])->name('support.close');
+
+    // About Content
+    Route::get('/about', [AboutController::class, 'index'])->name('about');
+    Route::get('/about/create', [AboutController::class, 'create'])->name('about.create');
+    Route::post('/about', [AboutController::class, 'store'])->name('about.store');
+    Route::get('/about/{about}/edit', [AboutController::class, 'edit'])->name('about.edit');
+    Route::put('/about/{about}', [AboutController::class, 'update'])->name('about.update');
+    Route::delete('/about/{about}', [AboutController::class, 'destroy'])->name('about.destroy');
 });
