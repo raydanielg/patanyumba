@@ -194,35 +194,40 @@ class _HomePageState extends State<_HomePage> {
             ),
             const SizedBox(height: 20),
             // Categories
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Categories',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+            if (_categories.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Categories',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 40,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        _buildCategoryChip(Icons.home_work_outlined, 'Houses'),
-                        _buildCategoryChip(Icons.apartment_outlined, 'Apartments'),
-                        _buildCategoryChip(Icons.bed_outlined, 'Rooms'),
-                        _buildCategoryChip(Icons.store_outlined, 'Commercial'),
-                        _buildCategoryChip(Icons.business_outlined, 'Office'),
-                        _buildCategoryChip(Icons.landscape_outlined, 'Land'),
-                      ],
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _categories.length,
+                        itemBuilder: (context, index) {
+                          final cat = _categories[index];
+                          return _buildCategoryChip(
+                            cat['name'] as String? ?? '',
+                            cat['image'] as String?,
+                            cat['icon'] as String?,
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
                   // Featured Properties - 2 column grid
                   const Text(
                     'Featured Listings',
