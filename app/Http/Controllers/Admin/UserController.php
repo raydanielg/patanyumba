@@ -28,15 +28,63 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'nullable|string|max:20',
+            'password' => 'required|string|min:6',
+            'role' => 'required|in:admin,landlord,agent,tenant',
+        ]);
+
+        $validated['password'] = \Hash::make($validated['password']);
+        $validated['is_active'] = true;
+        $validated['email_verified_at'] = now();
+
+        $user = User::create($validated);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'User created successfully', 'user' => $user]);
+        }
+        return back()->with('status', 'User created successfully');
+    }
+
     public function show(User $user)
     {
         $user->load('properties', 'kycDocuments', 'payments', 'subscriptions');
         return view('admin.users.show', compact('user'));
     }
 
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'User deleted successfully']);
+        }
+        return back()->with('status', 'User deleted');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:users,id']);
+
+        $count = User::whereIn('id', $request->ids)->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => $count . ' users deleted successfully']);
+        }
+        return back()->with('status', $count . ' users deleted');
+    }
+
     public function toggleStatus(User $user)
     {
         $user->update(['is_active' => !$user->is_active]);
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => $user->is_active ? 'User activated' : 'User suspended', 'is_active' => $user->is_active]);
+        }
         return back()->with('status', $user->is_active ? 'User activated' : 'User suspended');
     }
 
