@@ -621,3 +621,103 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     );
   }
 }
+
+class _VideoPlayerScreen extends StatefulWidget {
+  final String videoUrl;
+  const _VideoPlayerScreen({required this.videoUrl});
+
+  @override
+  State<_VideoPlayerScreen> createState() => _VideoPlayerScreenState();
+}
+
+class _VideoPlayerScreenState extends State<_VideoPlayerScreen> {
+  late final VideoPlayerController _controller;
+  bool _isInitialized = false;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
+    _controller.initialize().then((_) {
+      setState(() => _isInitialized = true);
+      _controller.play();
+    }).catchError((_) {
+      setState(() => _hasError = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text('Video Tour', style: GoogleFonts.nunito(color: Colors.white)),
+      ),
+      body: _hasError
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.white54, size: 48),
+                  const SizedBox(height: 12),
+                  Text('Unable to play video', style: GoogleFonts.nunito(color: Colors.white54)),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () async {
+                      await launchUrl(Uri.parse(widget.videoUrl));
+                    },
+                    child: Text('Open in browser', style: GoogleFonts.nunito(color: AppColors.tealGreen)),
+                  ),
+                ],
+              ),
+            )
+          : !_isInitialized
+              ? const Center(child: CircularProgressIndicator(color: Colors.white))
+              : GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (_controller.value.isPlaying) {
+                        _controller.pause();
+                      } else {
+                        _controller.play();
+                      }
+                    });
+                  },
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          VideoPlayer(_controller),
+                          if (!_controller.value.isPlaying)
+                            const Center(
+                              child: Icon(Icons.play_arrow, color: Colors.white70, size: 64),
+                            ),
+                          VideoProgressIndicator(
+                            _controller,
+                            allowScrubbing: true,
+                            colors: const VideoProgressColors(
+                              playedColor: Color(0xFF00A86B),
+                              bufferedColor: Colors.white24,
+                              backgroundColor: Colors.white12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+    );
+  }
+}
