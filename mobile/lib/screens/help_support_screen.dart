@@ -118,7 +118,7 @@ class _FaqTabState extends State<_FaqTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 4, bottom: 10, top: catIndex == 0 ? 0 : 16),
+                padding: EdgeInsets.only(left: 4, bottom: 10, top: catIndex == 0 ? 0 : 16),
                 child: Row(
                   children: [
                     Container(
