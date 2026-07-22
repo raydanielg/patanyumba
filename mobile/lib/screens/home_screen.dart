@@ -1315,69 +1315,154 @@ class _FavoritesPageState extends State<_FavoritesPage> {
   }
 }
 
-class _ProfilePage extends StatelessWidget {
+class _ProfilePage extends StatefulWidget {
   const _ProfilePage();
+
+  @override
+  State<_ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<_ProfilePage> {
+  Map<String, dynamic>? _user;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    setState(() => _isLoading = true);
+    try {
+      final data = await ApiService().get('user');
+      if (data['success'] == true && data['user'] != null) {
+        final user = data['user'] as Map<String, dynamic>;
+        await AuthService().updateUser(user);
+        setState(() {
+          _user = user;
+          _isLoading = false;
+        });
+      } else {
+        final savedUser = await AuthService().getUser();
+        setState(() {
+          _user = savedUser;
+          _isLoading = false;
+        });
+      }
+    } catch (_) {
+      final savedUser = await AuthService().getUser();
+      setState(() {
+        _user = savedUser;
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: AppBar(
+        title: Text('Profile', style: GoogleFonts.nunito(fontWeight: FontWeight.w700)),
+        backgroundColor: AppColors.tealGreen,
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator(color: AppColors.tealGreen))
+          : RefreshIndicator(
+              onRefresh: _fetchUser,
+              color: AppColors.tealGreen,
+              child: ListView(
+                children: [
+                  _buildProfileHeader(),
+                  const SizedBox(height: 16),
+                  _buildInfoSection(),
+                  const SizedBox(height: 16),
+                  _buildMenuSection(),
+                  const SizedBox(height: 24),
+                  _buildLogoutButton(),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
+    );
+  }
+
+  Widget _buildProfileHeader() {
+    final name = _user?['name'] ?? 'User';
+    final email = _user?['email'] ?? '';
+    final avatarUrl = _user?['avatar_url'] as String?;
+    final role = _user?['role'] ?? 'tenant';
+    final kycStatus = _user?['kyc_status'] ?? 'pending';
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.tealGreen,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
         child: Column(
           children: [
-            const SizedBox(height: 20),
             Container(
-              width: 80,
-              height: 80,
+              width: 90,
+              height: 90,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  colors: [AppColors.tealGreen, AppColors.darkTealGreen],
-                ),
+                color: Colors.white,
+                border: Border.all(color: Colors.white, width: 3),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 12,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
-              child: const Icon(Icons.person, size: 40, color: Colors.white),
+              child: ClipOval(
+                child: avatarUrl != null && avatarUrl.isNotEmpty
+                    ? Image.network(
+                        avatarUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => _buildAvatarPlaceholder(name),
+                      )
+                    : _buildAvatarPlaceholder(name),
+              ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'John Doe',
-              style: TextStyle(
-                fontSize: 20,
+            const SizedBox(height: 14),
+            Text(
+              name,
+              style: GoogleFonts.nunito(
+                fontSize: 22,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
-              'john.doe@example.com',
-              style: TextStyle(
+            Text(
+              email,
+              style: GoogleFonts.nunito(
                 fontSize: 14,
-                color: AppColors.textSecondary,
+                color: Colors.white.withValues(alpha: 0.8),
               ),
             ),
-            const SizedBox(height: 32),
-            _buildMenuTile(Icons.person_outline, 'Edit Profile', () {}),
-            _buildMenuTile(Icons.notifications_outlined, 'Notifications', () {}),
-            _buildMenuTile(Icons.settings_outlined, 'Settings', () {}),
-            _buildMenuTile(Icons.help_outline, 'Help & Support', () {}),
-            _buildMenuTile(Icons.info_outline, 'About ${AppConstants.appName}', () {}),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/login');
-                },
-                icon: const Icon(Icons.logout, color: AppColors.error),
-                label: const Text(
-                  'Logout',
-                  style: TextStyle(color: AppColors.error),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildHeaderChip(_capitalizeRole(role), Icons.person_outline),
+                const SizedBox(width: 8),
+                _buildHeaderChip(
+                  kycStatus == 'verified' ? 'KYC Verified' : 'KYC Pending',
+                  kycStatus == 'verified' ? Icons.verified : Icons.hourglass_top,
                 ),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.error),
-                ),
-              ),
+              ],
             ),
           ],
         ),
@@ -1385,47 +1470,693 @@ class _ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuTile(IconData icon, String title, VoidCallback onTap) {
+  Widget _buildAvatarPlaceholder(String name) {
+    final initials = name.isNotEmpty
+        ? name.split(' ').map((e) => e[0]).take(2).join().toUpperCase()
+        : '?';
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      color: AppColors.tealGreen50,
+      child: Center(
+        child: Text(
+          initials,
+          style: GoogleFonts.nunito(
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
+            color: AppColors.tealGreen,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderChip(String label, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: Colors.white),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: GoogleFonts.nunito(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
+    );
+  }
+
+  Widget _buildInfoSection() {
+    final phone = _user?['phone'] ?? 'Not set';
+    final region = _user?['region'] ?? 'Not set';
+    final district = _user?['district'] ?? 'Not set';
+    final email = _user?['email'] ?? 'Not set';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            _buildInfoRow(Icons.email_outlined, 'Email', email),
+            _buildDivider(),
+            _buildInfoRow(Icons.phone_outlined, 'Phone', phone),
+            _buildDivider(),
+            _buildInfoRow(Icons.location_on_outlined, 'Region', region),
+            _buildDivider(),
+            _buildInfoRow(Icons.map_outlined, 'District', district),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: AppColors.tealGreen50,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 18, color: AppColors.tealGreen),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(icon, color: AppColors.tealGreen, size: 24),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+                Text(
+                  label,
+                  style: GoogleFonts.nunito(
+                    fontSize: 11,
+                    color: AppColors.textHint,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GoogleFonts.nunito(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Divider(height: 1, color: AppColors.tealGreen100.withValues(alpha: 0.5)),
+    );
+  }
+
+  Widget _buildMenuSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            _buildMenuTile(Icons.edit_outlined, 'Edit Profile', 'Update your personal information', () => _showEditProfileModal()),
+            _buildMenuDivider(),
+            _buildMenuTile(Icons.lock_outline, 'Change Password', 'Update your account password', () => _showChangePasswordModal()),
+            _buildMenuDivider(),
+            _buildMenuTile(Icons.notifications_outlined, 'Notifications', 'Manage your notification settings', () {}),
+            _buildMenuDivider(),
+            _buildMenuTile(Icons.help_outline, 'Help & Support', 'Get help and contact us', () {}),
+            _buildMenuDivider(),
+            _buildMenuTile(Icons.info_outline, 'About ${AppConstants.appName}', 'App version and information', () {}),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuTile(IconData icon, String title, String subtitle, VoidCallback onTap) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.tealGreen50,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, size: 18, color: AppColors.tealGreen),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.nunito(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.nunito(
+                        fontSize: 11,
+                        color: AppColors.textHint,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: AppColors.textHint, size: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Divider(height: 1, color: AppColors.tealGreen100.withValues(alpha: 0.5)),
+    );
+  }
+
+  Widget _buildLogoutButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: SizedBox(
+        width: double.infinity,
+        height: 52,
+        child: OutlinedButton.icon(
+          onPressed: () async {
+            await AuthService().logout();
+            if (mounted) {
+              Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+            }
+          },
+          icon: const Icon(Icons.logout, color: AppColors.error, size: 20),
+          label: Text(
+            'Logout',
+            style: GoogleFonts.nunito(
+              color: AppColors.error,
+              fontWeight: FontWeight.w700,
+              fontSize: 15,
+            ),
+          ),
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: AppColors.error, width: 1.5),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            backgroundColor: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showEditProfileModal() {
+    final nameController = TextEditingController(text: _user?['name'] ?? '');
+    final phoneController = TextEditingController(text: _user?['phone'] ?? '');
+    final regionController = TextEditingController(text: _user?['region'] ?? '');
+    final districtController = TextEditingController(text: _user?['district'] ?? '');
+    final formKey = GlobalKey<FormState>();
+    bool isSaving = false;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) => Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              20, 12, 20,
+              20 + MediaQuery.of(ctx).viewInsets.bottom,
+            ),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Edit Profile',
+                    style: GoogleFonts.nunito(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
                       color: AppColors.textPrimary,
                     ),
                   ),
-                ),
-                const Icon(Icons.chevron_right, color: AppColors.textHint),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    'Update your personal information',
+                    style: GoogleFonts.nunito(
+                      fontSize: 13,
+                      color: AppColors.textHint,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildFormField(
+                    controller: nameController,
+                    label: 'Full Name',
+                    icon: Icons.person_outline,
+                    validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                  ),
+                  const SizedBox(height: 14),
+                  _buildFormField(
+                    controller: phoneController,
+                    label: 'Phone Number',
+                    icon: Icons.phone_outlined,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 14),
+                  _buildFormField(
+                    controller: regionController,
+                    label: 'Region',
+                    icon: Icons.location_on_outlined,
+                  ),
+                  const SizedBox(height: 14),
+                  _buildFormField(
+                    controller: districtController,
+                    label: 'District',
+                    icon: Icons.map_outlined,
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: Text(
+                            'Cancel',
+                            style: GoogleFonts.nunito(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: isSaving
+                              ? null
+                              : () async {
+                                  if (!formKey.currentState!.validate()) return;
+                                  setModalState(() => isSaving = true);
+                                  try {
+                                    final data = await ApiService().put(
+                                      'user/profile',
+                                      body: {
+                                        'name': nameController.text.trim(),
+                                        'phone': phoneController.text.trim(),
+                                        'region': regionController.text.trim(),
+                                        'district': districtController.text.trim(),
+                                      },
+                                    );
+                                    if (data['success'] == true && data['user'] != null) {
+                                      final updatedUser = data['user'] as Map<String, dynamic>;
+                                      await AuthService().updateUser(updatedUser);
+                                      if (mounted) {
+                                        setState(() => _user = updatedUser);
+                                      }
+                                      if (ctx.mounted) {
+                                        Navigator.pop(ctx);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(data['message'] ?? 'Profile updated'),
+                                            backgroundColor: AppColors.tealGreen,
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  } catch (e) {
+                                    if (ctx.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: const Text('Failed to update profile'),
+                                          backgroundColor: Colors.red,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  if (ctx.mounted) {
+                                    setModalState(() => isSaving = false);
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.tealGreen,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: isSaving
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                )
+                              : Text(
+                                  'Save Changes',
+                                  style: GoogleFonts.nunito(fontWeight: FontWeight.w700, fontSize: 14),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _showChangePasswordModal() {
+    final currentController = TextEditingController();
+    final newController = TextEditingController();
+    final confirmController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    bool isSaving = false;
+    bool obscureCurrent = true;
+    bool obscureNew = true;
+    bool obscureConfirm = true;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) => Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              20, 12, 20,
+              20 + MediaQuery.of(ctx).viewInsets.bottom,
+            ),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Change Password',
+                    style: GoogleFonts.nunito(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Enter your current password and a new one',
+                    style: GoogleFonts.nunito(
+                      fontSize: 13,
+                      color: AppColors.textHint,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildPasswordField(
+                    controller: currentController,
+                    label: 'Current Password',
+                    obscure: obscureCurrent,
+                    onToggle: () => setModalState(() => obscureCurrent = !obscureCurrent),
+                    validator: (v) => v == null || v.isEmpty ? 'Current password is required' : null,
+                  ),
+                  const SizedBox(height: 14),
+                  _buildPasswordField(
+                    controller: newController,
+                    label: 'New Password',
+                    obscure: obscureNew,
+                    onToggle: () => setModalState(() => obscureNew = !obscureNew),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'New password is required';
+                      if (v.length < 8) return 'Password must be at least 8 characters';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 14),
+                  _buildPasswordField(
+                    controller: confirmController,
+                    label: 'Confirm New Password',
+                    obscure: obscureConfirm,
+                    onToggle: () => setModalState(() => obscureConfirm = !obscureConfirm),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Please confirm your password';
+                      if (v != newController.text) return 'Passwords do not match';
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: Text(
+                            'Cancel',
+                            style: GoogleFonts.nunito(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: isSaving
+                              ? null
+                              : () async {
+                                  if (!formKey.currentState!.validate()) return;
+                                  setModalState(() => isSaving = true);
+                                  try {
+                                    final data = await ApiService().put(
+                                      'user/password',
+                                      body: {
+                                        'current_password': currentController.text,
+                                        'password': newController.text,
+                                        'password_confirmation': confirmController.text,
+                                      },
+                                    );
+                                    if (ctx.mounted) {
+                                      Navigator.pop(ctx);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(data['message'] ?? 'Password changed successfully'),
+                                          backgroundColor: AppColors.tealGreen,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        ),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    if (ctx.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: const Text('Failed to change password. Check your current password.'),
+                                          backgroundColor: Colors.red,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  if (ctx.mounted) {
+                                    setModalState(() => isSaving = false);
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.tealGreen,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: isSaving
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                )
+                              : Text(
+                                  'Update Password',
+                                  style: GoogleFonts.nunito(fontWeight: FontWeight.w700, fontSize: 14),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType? keyboardType,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, size: 20, color: AppColors.tealGreen),
+        labelStyle: GoogleFonts.nunito(fontSize: 13, color: AppColors.textHint),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.tealGreen100),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.tealGreen100),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.tealGreen, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      ),
+      style: GoogleFonts.nunito(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool obscure,
+    required VoidCallback onToggle,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscure,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: const Icon(Icons.lock_outline, size: 20, color: AppColors.tealGreen),
+        suffixIcon: IconButton(
+          icon: Icon(
+            obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            size: 20,
+            color: AppColors.textHint,
+          ),
+          onPressed: onToggle,
+        ),
+        labelStyle: GoogleFonts.nunito(fontSize: 13, color: AppColors.textHint),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.tealGreen100),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.tealGreen100),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.tealGreen, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      ),
+      style: GoogleFonts.nunito(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+    );
+  }
+
+  String _capitalizeRole(String role) {
+    if (role.isEmpty) return role;
+    return role[0].toUpperCase() + role.substring(1);
   }
 }
