@@ -23,6 +23,8 @@
         <div class="space-y-2 text-sm">
             <div class="flex justify-between"><span class="text-gray-400">Role</span><span class="font-medium capitalize text-gray-900">{{ $user->role }}</span></div>
             <div class="flex justify-between"><span class="text-gray-400">Phone</span><span class="text-gray-900">{{ $user->phone ?? '—' }}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Mkoa (Region)</span><span class="font-medium text-gray-900">{{ $user->region ?? '—' }}</span></div>
+            <div class="flex justify-between"><span class="text-gray-400">Wilaya (District)</span><span class="font-medium text-gray-900">{{ $user->district ?? '—' }}</span></div>
             <div class="flex justify-between"><span class="text-gray-400">KYC</span><span class="font-medium capitalize text-gray-900">{{ $user->kyc_status }}</span></div>
             <div class="flex justify-between"><span class="text-gray-400">Verification</span><span class="font-medium capitalize text-gray-900">{{ $user->verification_level }}</span></div>
             <div class="flex justify-between"><span class="text-gray-400">Status</span><span class="font-medium {{ $user->is_active ? 'text-emerald-600' : 'text-red-500' }}">{{ $user->is_active ? 'Active' : 'Suspended' }}</span></div>
