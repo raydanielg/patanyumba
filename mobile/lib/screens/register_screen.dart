@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../widgets/app_toast.dart';
 import 'home_screen.dart';
+import 'kyc_status_screen.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -20,9 +23,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _businessNameController = TextEditingController();
+  final _addressController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
   bool _isLoading = false;
+
+  String _selectedRole = 'tenant';
+  String? _selectedRegion;
+  String? _selectedDistrict;
+  int? _selectedRegionId;
+  List<Map<String, dynamic>> _regions = [];
+  List<Map<String, dynamic>> _districts = [];
+  bool _loadingRegions = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRegions();
+  }
 
   @override
   void dispose() {
@@ -31,11 +50,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _businessNameController.dispose();
+    _addressController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchRegions() async {
+    setState(() => _loadingRegions = true);
+    try {
+      final data = await ApiService().get('all-regions');
+      final List<dynamic> list = data['data'] ?? [];
+      setState(() {
+        _regions = list.cast<Map<String, dynamic>>();
+        _loadingRegions = false;
+      });
+    } catch (_) {
+      setState(() => _loadingRegions = false);
+    }
+  }
+
+  Future<void> _fetchDistricts(int regionId) async {
+    setState(() {
+      _selectedDistrict = null;
+      _districts = [];
+    });
+    try {
+      final data = await ApiService().get('regions/$regionId/districts');
+      final List<dynamic> list = data['data'] ?? [];
+      setState(() {
+        _districts = list.cast<Map<String, dynamic>>();
+      });
+    } catch (_) {}
   }
 
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
+      if (_selectedRole != 'tenant') {
+        if (_selectedRegion == null || _selectedDistrict == null) {
+          AppToast.warning(context, 'Missing Info', 'Please select your region and district');
+          return;
+        }
+      }
+
       setState(() => _isLoading = true);
 
       try {
@@ -44,14 +100,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _emailController.text.trim(),
           _passwordController.text,
           phone: _phoneController.text.trim(),
+          role: _selectedRole,
+          businessName: _selectedRole != 'tenant' ? _businessNameController.text.trim() : null,
+          region: _selectedRole != 'tenant' ? _selectedRegion : null,
+          district: _selectedRole != 'tenant' ? _selectedDistrict : null,
+          address: _selectedRole != 'tenant' ? _addressController.text.trim() : null,
         );
 
         if (success && mounted) {
-          AppToast.success(context, 'Account created!', 'Welcome to Patanyumba');
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-            (route) => false,
-          );
+          if (_selectedRole != 'tenant') {
+            AppToast.success(context, 'Account Created!', 'Please complete KYC verification');
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const KycStatusScreen(justRegistered: true)),
+              (route) => false,
+            );
+          } else {
+            AppToast.success(context, 'Account created!', 'Welcome to ${AppConstants.appName}');
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              (route) => false,
+            );
+          }
         }
       } catch (e) {
         if (mounted) {
@@ -120,30 +189,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'Create Account',
-                    style: TextStyle(
+                    style: GoogleFonts.nunito(
                       fontSize: 26,
                       fontWeight: FontWeight.w800,
                       color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    'Join Patanyumba today',
-                    style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                  Text(
+                    'Join ${AppConstants.appName} today',
+                    style: GoogleFonts.nunito(fontSize: 14, color: AppColors.textSecondary),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
+                  Text(
                     AppConstants.tagline,
-                    style: TextStyle(
+                    style: GoogleFonts.nunito(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       color: AppColors.tealGreen,
                       letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 28),
+                  // Account type toggle
+                  _buildAccountTypeToggle(),
+                  const SizedBox(height: 24),
                   // Name
                   TextFormField(
                     controller: _nameController,
@@ -255,8 +327,87 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
+                  // Landlord/Agent extra fields
+                  if (_selectedRole != 'tenant') ...[
+                    const SizedBox(height: 24),
+                    _buildSectionDivider('Business Details'),
+                    const SizedBox(height: 16),
+                    // Business name
+                    TextFormField(
+                      controller: _businessNameController,
+                      decoration: InputDecoration(
+                        labelText: _selectedRole == 'agent' ? 'Agency Name (optional)' : 'Business Name (optional)',
+                        hintText: _selectedRole == 'agent' ? 'e.g. PataNyumba Real Estate' : 'e.g. My Properties Ltd',
+                        prefixIcon: const Icon(Icons.business_outlined, color: AppColors.textHint),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Region dropdown
+                    _buildDropdownField(
+                      label: 'Region',
+                      value: _selectedRegion,
+                      hint: _loadingRegions ? 'Loading regions...' : 'Select your region',
+                      items: _regions.map((r) => r['name'] as String).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          _selectedRegion = val;
+                          _selectedRegionId = _regions.firstWhere((r) => r['name'] == val)['id'];
+                        });
+                        _fetchDistricts(_selectedRegionId!);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    // District dropdown
+                    _buildDropdownField(
+                      label: 'District',
+                      value: _selectedDistrict,
+                      hint: _selectedRegion == null ? 'Select region first' : 'Select your district',
+                      items: _districts.map((d) => d['name'] as String).toList(),
+                      onChanged: _selectedRegion == null
+                          ? null
+                          : (val) => setState(() => _selectedDistrict = val),
+                    ),
+                    const SizedBox(height: 16),
+                    // Address
+                    TextFormField(
+                      controller: _addressController,
+                      maxLines: 2,
+                      decoration: const InputDecoration(
+                        labelText: 'Street Address (optional)',
+                        hintText: 'e.g. Mlimani City, Sam Nujoma Road',
+                        prefixIcon: Icon(Icons.location_on_outlined, color: AppColors.textHint),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // KYC info note
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.warning.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColors.warning.withValues(alpha: 0.2), width: 1),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.info_outline, color: AppColors.warning, size: 18),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'As a ${_selectedRole == 'agent' ? 'agent' : 'landlord'}, you\'ll need to complete KYC verification after registration before listing properties.',
+                              style: GoogleFonts.nunito(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 16),
-                  // Info note
+                  // Terms note
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -301,12 +452,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
-                          : const Row(
+                          : Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.person_add, size: 20),
-                                SizedBox(width: 8),
-                                Text('Create Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                                Icon(_selectedRole == 'tenant' ? Icons.person_add : Icons.real_estate_agent, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  _selectedRole == 'tenant'
+                                      ? 'Create Account'
+                                      : 'Register as ${_selectedRole == 'agent' ? 'Agent' : 'Landlord'}',
+                                  style: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w700),
+                                ),
                               ],
                             ),
                     ),
@@ -316,9 +472,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Row(
                     children: [
                       const Expanded(child: Divider(color: AppColors.inputBorder)),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text('or', style: TextStyle(color: AppColors.textHint, fontSize: 14)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text('or', style: GoogleFonts.nunito(color: AppColors.textHint, fontSize: 14)),
                       ),
                       const Expanded(child: Divider(color: AppColors.inputBorder)),
                     ],
@@ -328,15 +484,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         'Already have an account? ',
-                        style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                        style: GoogleFonts.nunito(color: AppColors.textSecondary, fontSize: 14),
                       ),
                       GestureDetector(
                         onTap: () => Navigator.of(context).pop(),
-                        child: const Text(
+                        child: Text(
                           'Sign in',
-                          style: TextStyle(
+                          style: GoogleFonts.nunito(
                             color: AppColors.tealGreen,
                             fontWeight: FontWeight.w700,
                             fontSize: 14,
@@ -346,9 +502,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ],
                   ),
                   const SizedBox(height: 30),
-                  const Text(
-                    '\u00a9 2025 Patanyumba. All rights reserved.',
-                    style: TextStyle(fontSize: 12, color: AppColors.textHint),
+                  Text(
+                    '\u00a9 2025 ${AppConstants.appName}. All rights reserved.',
+                    style: GoogleFonts.nunito(fontSize: 12, color: AppColors.textHint),
                   ),
                   const SizedBox(height: 20),
                 ],
@@ -357,6 +513,140 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAccountTypeToggle() {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.inputBorder),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildToggleOption(
+              icon: Icons.person_outline,
+              label: 'Tenant',
+              isSelected: _selectedRole == 'tenant',
+              onTap: () => setState(() => _selectedRole = 'tenant'),
+            ),
+          ),
+          Expanded(
+            child: _buildToggleOption(
+              icon: Icons.home_outlined,
+              label: 'Landlord',
+              isSelected: _selectedRole == 'landlord',
+              onTap: () => setState(() => _selectedRole = 'landlord'),
+            ),
+          ),
+          Expanded(
+            child: _buildToggleOption(
+              icon: Icons.business_outlined,
+              label: 'Agent',
+              isSelected: _selectedRole == 'agent',
+              onTap: () => setState(() => _selectedRole = 'agent'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildToggleOption({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.tealGreen : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 22, color: isSelected ? Colors.white : AppColors.textHint),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: GoogleFonts.nunito(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: isSelected ? Colors.white : AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionDivider(String title) {
+    return Row(
+      children: [
+        const Expanded(child: Divider(color: AppColors.inputBorder)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            title,
+            style: GoogleFonts.nunito(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textHint,
+            ),
+          ),
+        ),
+        const Expanded(child: Divider(color: AppColors.inputBorder)),
+      ],
+    );
+  }
+
+  Widget _buildDropdownField({
+    required String label,
+    required String? value,
+    required String hint,
+    required List<String> items,
+    required ValueChanged<String?>? onChanged,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        hintStyle: GoogleFonts.nunito(fontSize: 14, color: AppColors.textHint),
+        prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.textHint),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.inputBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.inputBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.tealGreen, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      ),
+      items: items
+          .map((item) => DropdownMenuItem(
+                value: item,
+                child: Text(item, style: GoogleFonts.nunito(fontSize: 14, color: AppColors.textPrimary)),
+              ))
+          .toList(),
+      onChanged: onChanged,
+      icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.textHint),
+      isExpanded: true,
     );
   }
 }
