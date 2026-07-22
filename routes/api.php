@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\SupportChatController;
+use App\Http\Controllers\Api\AboutController;
 use Illuminate\Support\Facades\Route;
 
 // Auth routes (public)
