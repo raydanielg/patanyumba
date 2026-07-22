@@ -210,20 +210,22 @@ function isOn($all, $key) { return ($all[$key] ?? 'false') === 'true'; }
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 @php
                 $featureToggles = [
-                    ['key' => 'property_listing_enabled', 'label' => 'Property Listings', 'desc' => 'Allow property listings', 'icon' => '🏠'],
-                    ['key' => 'featured_listings_enabled', 'label' => 'Featured Listings', 'desc' => 'Enable featured property listings', 'icon' => '⭐'],
-                    ['key' => 'sponsored_listings_enabled', 'label' => 'Sponsored Listings', 'desc' => 'Enable sponsored property listings', 'icon' => '📢'],
-                    ['key' => 'property_unlock_enabled', 'label' => 'Property Unlock', 'desc' => 'Enable paid property unlock feature', 'icon' => '🔓'],
-                    ['key' => 'subscriptions_enabled', 'label' => 'Subscriptions', 'desc' => 'Enable subscription plans', 'icon' => '📋'],
-                    ['key' => 'user_registration_enabled', 'label' => 'User Registration', 'desc' => 'Allow new user registrations', 'icon' => '👤'],
-                    ['key' => 'agent_registration_enabled', 'label' => 'Agent Registration', 'desc' => 'Allow new agent registrations', 'icon' => '🏢'],
-                    ['key' => 'property_approval_required', 'label' => 'Property Approval', 'desc' => 'Require admin approval for new properties', 'icon' => '✅'],
+                    ['key' => 'property_listing_enabled', 'label' => 'Property Listings', 'desc' => 'Allow property listings', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>'],
+                    ['key' => 'featured_listings_enabled', 'label' => 'Featured Listings', 'desc' => 'Enable featured property listings', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>'],
+                    ['key' => 'sponsored_listings_enabled', 'label' => 'Sponsored Listings', 'desc' => 'Enable sponsored property listings', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>'],
+                    ['key' => 'property_unlock_enabled', 'label' => 'Property Unlock', 'desc' => 'Enable paid property unlock feature', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>'],
+                    ['key' => 'subscriptions_enabled', 'label' => 'Subscriptions', 'desc' => 'Enable subscription plans', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>'],
+                    ['key' => 'user_registration_enabled', 'label' => 'User Registration', 'desc' => 'Allow new user registrations', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>'],
+                    ['key' => 'agent_registration_enabled', 'label' => 'Agent Registration', 'desc' => 'Allow new agent registrations', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>'],
+                    ['key' => 'property_approval_required', 'label' => 'Property Approval', 'desc' => 'Require admin approval for new properties', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
                 ];
                 @endphp
                 @foreach($featureToggles as $t)
                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                     <div class="flex items-center gap-3">
-                        <span class="text-xl">{{ $t['icon'] }}</span>
+                        <div class="w-9 h-9 rounded-lg bg-white border flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $t['svg'] !!}</svg>
+                        </div>
                         <div>
                             <p class="text-sm font-medium text-gray-900">{{ $t['label'] }}</p>
                             <p class="text-[10px] text-gray-500">{{ $t['desc'] }}</p>
@@ -369,19 +371,21 @@ function isOn($all, $key) { return ($all[$key] ?? 'false') === 'true'; }
             <div class="space-y-3">
                 @php
                 $notifToggles = [
-                    ['key' => 'notify_new_registration', 'label' => 'New User Registration', 'desc' => 'Notify when a new user registers', 'icon' => '👤'],
-                    ['key' => 'notify_new_property', 'label' => 'New Property Listed', 'desc' => 'Notify when a new property is listed', 'icon' => '🏠'],
-                    ['key' => 'notify_kyc_submission', 'label' => 'KYC Submission', 'desc' => 'Notify when a user submits KYC documents', 'icon' => '🪪'],
-                    ['key' => 'notify_payment_received', 'label' => 'Payment Received', 'desc' => 'Notify when a payment is received', 'icon' => '💰'],
-                    ['key' => 'notify_property_report', 'label' => 'Property Reported', 'desc' => 'Notify when a property is reported', 'icon' => '🚩'],
-                    ['key' => 'notify_subscription_expiry', 'label' => 'Subscription Expiry', 'desc' => 'Notify when a subscription is about to expire', 'icon' => '⏰'],
-                    ['key' => 'email_notifications_enabled', 'label' => 'Email Notifications', 'desc' => 'Send email notifications in addition to in-app', 'icon' => '📧'],
+                    ['key' => 'notify_new_registration', 'label' => 'New User Registration', 'desc' => 'Notify when a new user registers', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>'],
+                    ['key' => 'notify_new_property', 'label' => 'New Property Listed', 'desc' => 'Notify when a new property is listed', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>'],
+                    ['key' => 'notify_kyc_submission', 'label' => 'KYC Submission', 'desc' => 'Notify when a user submits KYC documents', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.062-.18-2.087-.514-3.056z"/>'],
+                    ['key' => 'notify_payment_received', 'label' => 'Payment Received', 'desc' => 'Notify when a payment is received', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>'],
+                    ['key' => 'notify_property_report', 'label' => 'Property Reported', 'desc' => 'Notify when a property is reported', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>'],
+                    ['key' => 'notify_subscription_expiry', 'label' => 'Subscription Expiry', 'desc' => 'Notify when a subscription is about to expire', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
+                    ['key' => 'email_notifications_enabled', 'label' => 'Email Notifications', 'desc' => 'Send email notifications in addition to in-app', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>'],
                 ];
                 @endphp
                 @foreach($notifToggles as $t)
                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                     <div class="flex items-center gap-3">
-                        <span class="text-xl">{{ $t['icon'] }}</span>
+                        <div class="w-9 h-9 rounded-lg bg-white border flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $t['svg'] !!}</svg>
+                        </div>
                         <div>
                             <p class="text-sm font-medium text-gray-900">{{ $t['label'] }}</p>
                             <p class="text-[10px] text-gray-500">{{ $t['desc'] }}</p>
@@ -411,18 +415,20 @@ function isOn($all, $key) { return ($all[$key] ?? 'false') === 'true'; }
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                     @php
                     $payMethods = [
-                        ['key' => 'mpesa_enabled', 'label' => 'M-Pesa', 'icon' => '📱'],
-                        ['key' => 'airtel_money_enabled', 'label' => 'Airtel Money', 'icon' => '📲'],
-                        ['key' => 'halopesa_enabled', 'label' => 'HaloPesa', 'icon' => '🏦'],
-                        ['key' => 'tpesa_enabled', 'label' => 'T-Pesa', 'icon' => '📞'],
-                        ['key' => 'mixx_yas_enabled', 'label' => 'Mixx Yas', 'icon' => '💳'],
-                        ['key' => 'card_payment_enabled', 'label' => 'Visa/Mastercard', 'icon' => '💳'],
-                        ['key' => 'cash_payment_enabled', 'label' => 'Cash', 'icon' => '💵'],
+                        ['key' => 'mpesa_enabled', 'label' => 'M-Pesa', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2zm3 18h4M7 6h10v8H7V6z"/>'],
+                        ['key' => 'airtel_money_enabled', 'label' => 'Airtel Money', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2zm3 18h4M7 6h10v8H7V6z"/>'],
+                        ['key' => 'halopesa_enabled', 'label' => 'HaloPesa', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>'],
+                        ['key' => 'tpesa_enabled', 'label' => 'T-Pesa', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>'],
+                        ['key' => 'mixx_yas_enabled', 'label' => 'Mixx Yas', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>'],
+                        ['key' => 'card_payment_enabled', 'label' => 'Visa/Mastercard', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>'],
+                        ['key' => 'cash_payment_enabled', 'label' => 'Cash', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2-4h10a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6a2 2 0 012-2zm7 5a1 1 0 11-2 0 1 1 0 012 0z"/>'],
                     ];
                     @endphp
                     @foreach($payMethods as $m)
                     <div class="flex flex-col items-center gap-2 p-3 rounded-xl border {{ isOn($all, $m['key']) ? 'border-emerald-300 bg-emerald-50/50' : 'border-gray-200 bg-gray-50' }}">
-                        <span class="text-2xl">{{ $m['icon'] }}</span>
+                        <div class="w-10 h-10 rounded-lg bg-white border flex items-center justify-center">
+                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $m['svg'] !!}</svg>
+                        </div>
                         <span class="text-xs font-medium text-gray-700">{{ $m['label'] }}</span>
                         <button onclick="toggleSetting('{{ $m['key'] }}', this)" data-key="{{ $m['key'] }}" class="toggle-switch relative inline-flex h-6 w-11 items-center rounded-full transition-colors {{ isOn($all, $m['key']) ? 'bg-emerald-500' : 'bg-gray-300' }}">
                             <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform {{ isOn($all, $m['key']) ? 'translate-x-6' : 'translate-x-1' }}"></span>
@@ -494,16 +500,18 @@ function isOn($all, $key) { return ($all[$key] ?? 'false') === 'true'; }
             <div class="space-y-4">
                 @php
                 $socials = [
-                    ['key' => 'social_facebook', 'label' => 'Facebook', 'icon' => '📘', 'placeholder' => 'https://facebook.com/...'],
-                    ['key' => 'social_instagram', 'label' => 'Instagram', 'icon' => '📷', 'placeholder' => 'https://instagram.com/...'],
-                    ['key' => 'social_twitter', 'label' => 'Twitter / X', 'icon' => '🐦', 'placeholder' => 'https://twitter.com/...'],
-                    ['key' => 'social_whatsapp', 'label' => 'WhatsApp', 'icon' => '💬', 'placeholder' => '+255 700 000 000'],
-                    ['key' => 'social_youtube', 'label' => 'YouTube', 'icon' => '▶️', 'placeholder' => 'https://youtube.com/...'],
+                    ['key' => 'social_facebook', 'label' => 'Facebook', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>', 'placeholder' => 'https://facebook.com/...'],
+                    ['key' => 'social_instagram', 'label' => 'Instagram', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>', 'placeholder' => 'https://instagram.com/...'],
+                    ['key' => 'social_twitter', 'label' => 'Twitter / X', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>', 'placeholder' => 'https://twitter.com/...'],
+                    ['key' => 'social_whatsapp', 'label' => 'WhatsApp', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>', 'placeholder' => '+255 700 000 000'],
+                    ['key' => 'social_youtube', 'label' => 'YouTube', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>', 'placeholder' => 'https://youtube.com/...'],
                 ];
                 @endphp
                 @foreach($socials as $s)
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gray-50 border flex items-center justify-center text-xl flex-shrink-0">{{ $s['icon'] }}</div>
+                    <div class="w-10 h-10 rounded-xl bg-gray-50 border flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $s['svg'] !!}</svg>
+                    </div>
                     <div class="flex-1">
                         <label class="block text-xs font-semibold text-gray-700 mb-1">{{ $s['label'] }}</label>
                         <input type="text" data-key="{{ $s['key'] }}" value="{{ sv($all, $s['key']) }}" placeholder="{{ $s['placeholder'] }}" class="setting-input w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
