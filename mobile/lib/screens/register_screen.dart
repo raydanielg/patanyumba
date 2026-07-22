@@ -166,11 +166,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   TextFormField(
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
+                    maxLength: 10,
                     decoration: const InputDecoration(
-                      labelText: 'Phone Number (optional)',
-                      hintText: '+255 7XX XXX XXX',
+                      labelText: 'Phone Number',
+                      hintText: '06XXXXXXXX',
                       prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textHint),
+                      counterText: '',
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      if (!RegExp(r'^0[6-7]\d{8}$').hasMatch(value)) {
+                        return 'Enter valid number (e.g. 06XXXXXXXX)';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   // Email
