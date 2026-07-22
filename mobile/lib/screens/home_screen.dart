@@ -228,7 +228,12 @@ class _HomePageState extends State<_HomePage> {
                   ],
                 ),
               ),
-                  // Featured Properties - 2 column grid
+            // Featured Properties - 2 column grid
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   const Text(
                     'Featured Listings',
                     style: TextStyle(
