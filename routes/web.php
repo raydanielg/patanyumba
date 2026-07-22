@@ -57,7 +57,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/subscriptions/plans', [SubscriptionController::class, 'plans'])->name('subscriptions.plans');
     Route::post('/subscriptions/plans', [SubscriptionController::class, 'storePlan'])->name('subscriptions.plans.store');
+    Route::put('/subscriptions/plans/{plan}', [SubscriptionController::class, 'updatePlan'])->name('subscriptions.plans.update');
     Route::post('/subscriptions/plans/{plan}/toggle', [SubscriptionController::class, 'togglePlan'])->name('subscriptions.plans.toggle');
+    Route::delete('/subscriptions/plans/{plan}', [SubscriptionController::class, 'destroyPlan'])->name('subscriptions.plans.destroy');
     Route::get('/subscriptions', [SubscriptionController::class, 'subscriptions'])->name('subscriptions');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports');

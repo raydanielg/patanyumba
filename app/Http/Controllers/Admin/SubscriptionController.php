@@ -17,23 +17,77 @@ class SubscriptionController extends Controller
 
     public function storePlan(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'slug' => 'required|string|unique:subscription_plans,slug',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0',
             'billing_cycle' => 'required|in:one_time,weekly,monthly,quarterly,yearly',
-            'unlock_limit' => 'nullable|integer',
-            'description' => 'nullable|string',
+            'target_audience' => 'required|in:house_hunter,agent,both',
+            'unlock_limit' => 'nullable|integer|min:0',
+            'description' => 'nullable|string|max:1000',
+            'features' => 'nullable|string',
         ]);
 
-        SubscriptionPlan::create($request->all());
+        if (!empty($validated['features'])) {
+            $validated['features'] = array_filter(array_map('trim', explode("\n", $validated['features'])));
+        } else {
+            $validated['features'] = null;
+        }
+        $validated['currency'] = 'TZS';
+        $validated['is_active'] = true;
+
+        $plan = SubscriptionPlan::create($validated);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Plan created successfully', 'plan' => $plan]);
+        }
         return back()->with('status', 'Plan created');
+    }
+
+    public function updatePlan(Request $request, SubscriptionPlan $plan)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'billing_cycle' => 'required|in:one_time,weekly,monthly,quarterly,yearly',
+            'target_audience' => 'required|in:house_hunter,agent,both',
+            'unlock_limit' => 'nullable|integer|min:0',
+            'description' => 'nullable|string|max:1000',
+            'features' => 'nullable|string',
+        ]);
+
+        if (!empty($validated['features'])) {
+            $validated['features'] = array_filter(array_map('trim', explode("\n", $validated['features'])));
+        } else {
+            $validated['features'] = null;
+        }
+
+        $plan->update($validated);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Plan updated successfully', 'plan' => $plan]);
+        }
+        return back()->with('status', 'Plan updated');
     }
 
     public function togglePlan(SubscriptionPlan $plan)
     {
         $plan->update(['is_active' => !$plan->is_active]);
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => $plan->is_active ? 'Plan activated' : 'Plan deactivated', 'is_active' => $plan->is_active]);
+        }
         return back()->with('status', $plan->is_active ? 'Plan activated' : 'Plan deactivated');
+    }
+
+    public function destroyPlan(SubscriptionPlan $plan)
+    {
+        $plan->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Plan deleted successfully']);
+        }
+        return back()->with('status', 'Plan deleted');
     }
 
     public function subscriptions()
