@@ -610,6 +610,122 @@ document.querySelectorAll('.save-btn').forEach(btn => {
         this.disabled = false;
     });
 });
+// Hero slides management
+let heroSlideCount = 0;
+const heroData = @json(collect($all)->filter(fn($v, $k) => str_starts_with($k, 'hero_'))->all());
+
+function initHeroSlides() {
+    const container = document.getElementById('heroSlidesContainer');
+    container.innerHTML = '';
+
+    // Find max slide number from existing data
+    let maxSlide = 0;
+    Object.keys(heroData).forEach(key => {
+        const match = key.match(/^hero_\w+_(\d+)$/);
+        if (match) maxSlide = Math.max(maxSlide, parseInt(match[1]));
+    });
+
+    if (maxSlide === 0) {
+        addHeroSlide();
+        return;
+    }
+
+    for (let i = 1; i <= maxSlide; i++) {
+        const hasData = heroData['hero_title_' + i] || heroData['hero_image_' + i] || heroData['hero_subtitle_' + i];
+        if (hasData !== undefined) {
+            addHeroSlide(i);
+        }
+    }
+}
+
+function addHeroSlide(presetNum) {
+    heroSlideCount++;
+    const num = presetNum || heroSlideCount;
+    const container = document.getElementById('heroSlidesContainer');
+
+    const image = heroData['hero_image_' + num] || '';
+    const title = heroData['hero_title_' + num] || '';
+    const subtitle = heroData['hero_subtitle_' + num] || '';
+    const btnText = heroData['hero_button_text_' + num] || '';
+    const btnLink = heroData['hero_button_link_' + num] || '';
+
+    const slide = document.createElement('div');
+    slide.className = 'bg-white rounded-xl border p-5';
+    slide.dataset.slide = num;
+    slide.innerHTML = `
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <h3 class="text-sm font-bold text-gray-900">Slide ${num}</h3>
+            </div>
+            <button type="button" onclick="removeHeroSlide(this, ${num})" class="text-xs font-bold text-red-600 bg-red-50 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-all">Delete</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-1">
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Image</label>
+                <div id="heroPreview${num}" class="relative rounded-lg overflow-hidden border h-32 bg-gray-100 mb-2 ${image ? '' : 'hidden'}">
+                    <img id="heroImg${num}" src="${image}" class="w-full h-full object-cover" alt="Hero ${num}">
+                </div>
+                <div id="heroPlaceholder${num}" class="rounded-lg border-2 border-dashed border-gray-300 h-32 flex items-center justify-center mb-2 ${image ? 'hidden' : ''}">
+                    <div class="text-center">
+                        <svg class="w-8 h-8 text-gray-400 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <p class="text-[10px] text-gray-400">No image</p>
+                    </div>
+                </div>
+                <input type="file" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="uploadHero(${num}, this)" class="hidden" id="heroFile${num}">
+                <div class="flex gap-2">
+                    <button type="button" onclick="document.getElementById('heroFile${num}').click()" class="flex-1 px-3 py-2 text-xs font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-1.5 transition-all">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                        Upload
+                    </button>
+                    <button type="button" onclick="removeHeroImage(${num})" id="heroRemoveBtn${num}" class="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-all ${image ? '' : 'hidden'}">Remove</button>
+                </div>
+                <p id="heroUploading${num}" class="text-[10px] text-emerald-600 mt-1 hidden">Uploading...</p>
+            </div>
+            <div class="md:col-span-2 space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">Title</label>
+                    <input type="text" data-key="hero_title_${num}" value="${title}" class="setting-input w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">Subtitle</label>
+                    <input type="text" data-key="hero_subtitle_${num}" value="${subtitle}" class="setting-input w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Button Text</label>
+                        <input type="text" data-key="hero_button_text_${num}" value="${btnText}" placeholder="e.g. Search Now" class="setting-input w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Button Link</label>
+                        <input type="text" data-key="hero_button_link_${num}" value="${btnLink}" placeholder="e.g. /search" class="setting-input w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    container.appendChild(slide);
+}
+
+function removeHeroSlide(btn, num) {
+    if (!confirm('Delete this slide? Save changes to apply.')) return;
+    btn.closest('[data-slide]').remove();
+    // Clear settings via AJAX
+    fetch('{{ route("admin.settings.update") }}', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            ['hero_image_' + num]: '',
+            ['hero_title_' + num]: '',
+            ['hero_subtitle_' + num]: '',
+            ['hero_button_text_' + num]: '',
+            ['hero_button_link_' + num]: '',
+        })
+    }).then(() => showToast('Slide ' + num + ' deleted'));
+}
+
 // Hero image upload (AJAX)
 async function uploadHero(slide, input) {
     const file = input.files[0];
@@ -650,8 +766,8 @@ async function uploadHero(slide, input) {
     input.value = '';
 }
 
-// Remove hero image (AJAX)
-async function removeHero(slide) {
+// Remove hero image only (AJAX)
+async function removeHeroImage(slide) {
     const preview = document.getElementById('heroPreview' + slide);
     const placeholder = document.getElementById('heroPlaceholder' + slide);
     const removeBtn = document.getElementById('heroRemoveBtn' + slide);
@@ -667,9 +783,12 @@ async function removeHero(slide) {
             preview.classList.add('hidden');
             placeholder.classList.remove('hidden');
             removeBtn.classList.add('hidden');
-            showToast('Hero slide ' + slide + ' image removed');
+            showToast('Image removed');
         }
     } catch { showToast('Network error', 'error'); }
 }
+
+// Init hero slides on load
+initHeroSlides();
 </script>
 @endsection
