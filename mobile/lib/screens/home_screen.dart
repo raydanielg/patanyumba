@@ -78,6 +78,7 @@ class _HomePageState extends State<_HomePage> {
     super.initState();
     _fetchHeroSlides();
     _fetchCategories();
+    _fetchFeaturedProperties();
     _heroTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       if (_heroController.hasClients && _heroSlides.length > 1) {
         int next = (_currentHeroPage + 1) % _heroSlides.length;
@@ -116,6 +117,16 @@ class _HomePageState extends State<_HomePage> {
       final cats = (data['data'] as List<dynamic>?) ?? [];
       setState(() {
         _categories = cats.cast<Map<String, dynamic>>();
+      });
+    } catch (_) {}
+  }
+
+  Future<void> _fetchFeaturedProperties() async {
+    try {
+      final data = await ApiService().get('properties?per_page=6');
+      final props = (data['data'] as List<dynamic>?) ?? [];
+      setState(() {
+        _featuredProperties = props.cast<Map<String, dynamic>>();
       });
     } catch (_) {}
   }
