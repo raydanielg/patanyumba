@@ -268,6 +268,26 @@ function showToast(msg, type = 'success') {
     setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(-10px)'; setTimeout(() => toast.classList.add('hidden'), 300); }, 3000);
 }
 
+// Region -> District dynamic loading
+const tanzaniaRegions = @json($tanzaniaRegions);
+const regionSelect = document.getElementById('profileRegion');
+const districtSelect = document.getElementById('profileDistrict');
+
+regionSelect.addEventListener('change', function() {
+    const region = this.value;
+    districtSelect.innerHTML = '<option value="">-- Chagua Wilaya --</option>';
+    if (region && tanzaniaRegions[region]) {
+        districtSelect.disabled = false;
+        tanzaniaRegions[region].forEach(function(d) {
+            const opt = document.createElement('option');
+            opt.value = d; opt.textContent = d;
+            districtSelect.appendChild(opt);
+        });
+    } else {
+        districtSelect.disabled = true;
+    }
+});
+
 // Avatar upload
 async function uploadAvatar(input) {
     if (!input.files || !input.files[0]) return;

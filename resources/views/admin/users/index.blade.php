@@ -61,6 +61,7 @@
                 <th class="px-5 py-3 font-medium">Role</th>
                 <th class="px-5 py-3 font-medium">KYC</th>
                 <th class="px-5 py-3 font-medium">Phone</th>
+                <th class="px-5 py-3 font-medium">Location</th>
                 <th class="px-5 py-3 font-medium">Status</th>
                 <th class="px-5 py-3 font-medium">Joined</th>
                 <th class="px-5 py-3 font-medium text-right">Actions</th>
@@ -105,6 +106,16 @@
                         </span>
                     </td>
                     <td class="px-5 py-3 text-xs text-gray-500">{{ $user->phone ?? '—' }}</td>
+                    <td class="px-5 py-3 text-xs text-gray-500">
+                        @if($user->region || $user->district)
+                            <div class="flex items-center gap-1">
+                                <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <span>{{ $user->region ?? '' }}{{ $user->region && $user->district ? ', ' : '' }}{{ $user->district ?? '' }}</span>
+                            </div>
+                        @else
+                            <span class="text-gray-300">—</span>
+                        @endif
+                    </td>
                     <td class="px-5 py-3">
                         <button onclick="toggleStatus({{ $user->id }}, this)" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border transition-all cursor-pointer
                             @if($user->is_active) bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100
@@ -125,7 +136,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="8" class="px-5 py-12 text-center">
+                <tr><td colspan="9" class="px-5 py-12 text-center">
                     <div class="flex flex-col items-center gap-2">
                         <svg class="w-12 h-12 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         <p class="text-sm text-gray-400">No users found</p>
