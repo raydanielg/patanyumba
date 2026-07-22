@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('support_chats', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('subject')->default('General Support');
+            $table->string('status')->default('open'); // open, closed
+            $table->timestamp('last_message_at')->nullable();
             $table->timestamps();
         });
     }
