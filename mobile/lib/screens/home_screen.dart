@@ -138,13 +138,6 @@ class _HomePageState extends State<_HomePage> {
             ],
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, size: 24),
-            onPressed: () => _openSearch(context),
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
