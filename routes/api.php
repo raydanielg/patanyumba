@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PropertyImageController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\FaqController;
+use App\Http\Controllers\Api\SupportChatController;
 use Illuminate\Support\Facades\Route;
 
 // Auth routes (public)
