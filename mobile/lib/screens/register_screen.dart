@@ -162,6 +162,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  // Phone
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      labelText: 'Phone Number (optional)',
+                      hintText: '+255 7XX XXX XXX',
+                      prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textHint),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   // Email
                   TextFormField(
                     controller: _emailController,
