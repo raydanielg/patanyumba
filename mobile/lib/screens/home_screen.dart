@@ -9,6 +9,7 @@ import 'categories_screen.dart';
 import 'category_properties_screen.dart';
 import 'notifications_screen.dart';
 import 'property_detail_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
