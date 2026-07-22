@@ -71,6 +71,16 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     return Icons.check_circle_outline;
   }
 
+  void _playVideo(BuildContext context, String? videoUrl) {
+    if (videoUrl == null || videoUrl.isEmpty) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => _VideoPlayerScreen(videoUrl: videoUrl),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
