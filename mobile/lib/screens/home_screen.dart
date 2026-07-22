@@ -1653,7 +1653,12 @@ class _ProfilePageState extends State<_ProfilePage> {
               );
             }),
             _buildMenuDivider(),
-            _buildMenuTile(Icons.info_outline, 'About ${AppConstants.appName}', 'App version and information', () {}),
+            _buildMenuTile(Icons.info_outline, 'About ${AppConstants.appName}', 'Learn more about us', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AboutScreen()),
+              );
+            }),
           ],
         ),
       ),
