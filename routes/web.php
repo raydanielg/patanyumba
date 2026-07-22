@@ -53,6 +53,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/properties/{property}/units/{unitId}', [PropertyController::class, 'showUnit'])->name('properties.units.show');
     Route::put('/properties/{property}/units/{unitId}', [PropertyController::class, 'updateUnit'])->name('properties.units.update');
     Route::delete('/properties/{property}/units/{unitId}', [PropertyController::class, 'destroyUnit'])->name('properties.units.destroy');
+    Route::post('/properties/{property}/media', [PropertyController::class, 'uploadMedia'])->name('properties.media.upload');
+    Route::delete('/properties/{property}/media/{mediaId}', [PropertyController::class, 'deleteMedia'])->name('properties.media.delete');
 
     Route::get('/kyc', [KycController::class, 'index'])->name('kyc');
     Route::post('/kyc', [KycController::class, 'store'])->name('kyc.store');
