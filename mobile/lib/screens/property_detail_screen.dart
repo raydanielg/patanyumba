@@ -321,43 +321,22 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Action buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          // TODO: Get contact action
-                          _showContactDialog(context, contactPhone, ownerName);
-                        },
-                        icon: const Icon(Icons.phone, size: 18),
-                        label: const Text('Get Contact'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.tealGreen,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
+                // Action button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      _showContactDialog(context, contactPhone, ownerName);
+                    },
+                    icon: const Icon(Icons.phone, size: 18),
+                    label: const Text('Get Contact'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.tealGreen,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          // TODO: Check availability
-                          _showAvailabilityDialog(context, isAvailable);
-                        },
-                        icon: const Icon(Icons.event_available, size: 18),
-                        label: const Text('Check Availability'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.tealGreen,
-                          side: const BorderSide(color: AppColors.tealGreen, width: 1.5),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 24),
 
