@@ -97,7 +97,13 @@ class PropertyController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $properties,
+            'data' => $properties->items(),
+            'meta' => [
+                'current_page' => $properties->currentPage(),
+                'last_page' => $properties->lastPage(),
+                'per_page' => $properties->perPage(),
+                'total' => $properties->total(),
+            ],
         ]);
     }
 
