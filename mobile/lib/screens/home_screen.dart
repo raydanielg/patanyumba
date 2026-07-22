@@ -172,7 +172,7 @@ class _HomePageState extends State<_HomePage> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  // Featured
+                  // Featured Properties - 2 column grid
                   const Text(
                     'Featured Listings',
                     style: TextStyle(
@@ -182,120 +182,28 @@ class _HomePageState extends State<_HomePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  SizedBox(
-                    height: 200,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: 280,
-                          margin: const EdgeInsets.only(right: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.06),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(16),
-                                  ),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppColors.tealGreen100,
-                                      AppColors.tealGreen200,
-                                    ],
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.home_outlined,
-                                    size: 48,
-                                    color: AppColors.tealGreen,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Beautiful Property',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.textPrimary,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      children: [
-                                        Icon(Icons.location_on_outlined,
-                                            size: 14, color: AppColors.textHint),
-                                        const SizedBox(width: 4),
-                                        const Text(
-                                          'Dar es Salaam',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: AppColors.textSecondary,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          'TSh 450,000/mo',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800,
-                                            color: AppColors.tealGreen,
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.lightGreen
-                                                .withValues(alpha: 0.15),
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: const Text(
-                                            'For Rent',
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppColors.lightGreen600,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 0.72,
                     ),
+                    itemCount: 6,
+                    itemBuilder: (context, index) {
+                      final properties = [
+                        {'title': 'Modern Apartment', 'location': 'Kinondoni, DSM'},
+                        {'title': 'Family House', 'location': 'Kigamboni, DSM'},
+                        {'title': 'Studio Flat', 'location': 'Ilala, DSM'},
+                        {'title': 'Commercial Space', 'location': 'Ubungo, DSM'},
+                        {'title': '3 Bedroom House', 'location': 'Mbezi, DSM'},
+                        {'title': 'Penthouse', 'location': 'Masaki, DSM'},
+                      ];
+                      final p = properties[index];
+                      return _buildPropertyCard(p['title']!, p['location']!);
+                    },
                   ),
                   const SizedBox(height: 24),
                 ],
