@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
 import 'login_screen.dart';
@@ -56,7 +57,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _finish() {
+  void _finish() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(AppConstants.onboardingKey, true);
+    if (!mounted) return;
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
