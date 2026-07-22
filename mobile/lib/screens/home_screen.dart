@@ -486,45 +486,52 @@ class _HomePageState extends State<_HomePage> {
     );
   }
 
-  Widget _buildCategoryChip(String name, String? imageUrl, String? iconName) {
+  Widget _buildCategoryCard(String name, String? imageUrl, String? iconName) {
     final icon = _getCategoryIcon(iconName);
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.tealGreen50,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.tealGreen100,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (imageUrl != null && imageUrl.isNotEmpty)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                imageUrl,
-                width: 20,
-                height: 20,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Icon(icon, size: 16, color: AppColors.tealGreen),
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        width: 72,
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: AppColors.tealGreen50,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.tealGreen100,
+                  width: 1,
+                ),
               ),
-            )
-          else
-            Icon(icon, size: 16, color: AppColors.tealGreen),
-          const SizedBox(width: 6),
-          Text(
-            name,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: imageUrl != null && imageUrl.isNotEmpty
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Icon(icon, size: 28, color: AppColors.tealGreen),
+                      )
+                    : Icon(icon, size: 28, color: AppColors.tealGreen),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 6),
+            Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
