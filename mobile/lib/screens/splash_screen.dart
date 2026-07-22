@@ -83,20 +83,33 @@ class _SplashScreenState extends State<SplashScreen>
     });
 
     // Navigate after full sequence
-    Timer(const Duration(seconds: 4), () {
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const OnboardingScreen(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 500),
-          ),
-        );
+    Timer(const Duration(seconds: 4), () async {
+      if (!mounted) return;
+
+      final isLoggedIn = await AuthService().isLoggedIn();
+      final prefs = await SharedPreferences.getInstance();
+      final onboardingComplete = prefs.getBool(AppConstants.onboardingKey) ?? false;
+
+      if (!mounted) return;
+
+      Widget nextScreen;
+      if (isLoggedIn) {
+        nextScreen = const HomeScreen();
+      } else if (!onboardingComplete) {
+        nextScreen = const OnboardingScreen();
+      } else {
+        nextScreen = const LoginScreen();
       }
+
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 500),
+        ),
+      );
     });
   }
 
