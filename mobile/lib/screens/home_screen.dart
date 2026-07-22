@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../services/api_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -140,7 +141,7 @@ class _HomePageState extends State<_HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search, size: 24),
-            onPressed: () {},
+            onPressed: () => _openSearch(context),
           ),
           const SizedBox(width: 8),
         ],
