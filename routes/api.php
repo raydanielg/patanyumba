@@ -120,4 +120,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports/{report}', [ReportController::class, 'show']);
     Route::post('/reports', [ReportController::class, 'store']);
     Route::post('/reports/{report}/resolve', [ReportController::class, 'resolve']);
+
+    // Support Chat
+    Route::get('/support/chat', [SupportChatController::class, 'index']);
+    Route::get('/support/chat/{chat}/messages', [SupportChatController::class, 'messages']);
+    Route::post('/support/chat/{chat}/send', [SupportChatController::class, 'sendMessage']);
+    Route::post('/support/chat/{chat}/read', [SupportChatController::class, 'markRead']);
+    Route::post('/support/chat/{chat}/close', [SupportChatController::class, 'closeChat']);
 });
