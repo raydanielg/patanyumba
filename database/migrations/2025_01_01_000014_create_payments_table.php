@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('payment_type', ['unlock', 'subscription', 'featured', 'sponsored']);
             $table->decimal('amount', 12, 2);
             $table->string('currency', 3)->default('TZS');
-            $table->enum('method', ['mpesa', 'airtel_money', 'mixx_yas', 'halopesa', 'tpesa', 'visa', 'mastercard']);
+            $table->enum('method', ['cash', 'mpesa', 'airtel_money', 'mixx_yas', 'halopesa', 'tpesa', 'visa', 'mastercard']);
             $table->string('provider_tx_id')->nullable();
             $table->enum('status', ['pending', 'success', 'failed', 'refunded'])->default('pending');
             $table->text('failure_reason')->nullable();
