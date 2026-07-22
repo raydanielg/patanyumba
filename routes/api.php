@@ -25,6 +25,9 @@ Route::get('/hero-slides', [SettingController::class, 'heroSlides']);
 Route::get('/app-settings', [SettingController::class, 'appSettings']);
 Route::get('/categories', [SettingController::class, 'categories']);
 Route::get('/regions', [SettingController::class, 'regions']);
+Route::get('/all-regions', [SettingController::class, 'allRegions']);
+Route::get('/regions-with-districts', [SettingController::class, 'regionsWithDistricts']);
+Route::get('/regions/{regionId}/districts', [SettingController::class, 'districts']);
 
 // Public FAQ
 Route::get('/faqs', [FaqController::class, 'index']);

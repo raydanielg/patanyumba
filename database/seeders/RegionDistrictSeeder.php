@@ -18,7 +18,7 @@ class RegionDistrictSeeder extends Seeder
             'Tanga' => ['Tanga Urban', 'Tanga Rural', 'Handeni', 'Kilindi', 'Korogwe', 'Lushoto', 'Muheza', 'Pangani', 'Mkinga'],
             'Morogoro' => ['Morogoro Urban', 'Morogoro Rural', 'Gairo', 'Ifakara', 'Kilombero', 'Kilosa', 'Mahenge', 'Malinyi', 'Mvomero', 'Ulanga'],
             'Pwani' => ['Bagamoyo', 'Kibaha', 'Kisarawe', 'Mafia', 'Mkuranga', 'Rufiji', 'Chalinze', 'Mlandizi'],
-            'Mtwara' => ['Mtwara Urban', 'Mtwara Rural', 'Masasi', 'Newala', 'Tandahimba', 'Nanyumbu', 'Tandahimba'],
+            'Mtwara' => ['Mtwara Urban', 'Mtwara Rural', 'Masasi', 'Newala', 'Tandahimba', 'Nanyumbu'],
             'Lindi' => ['Lindi Urban', 'Lindi Rural', 'Kilwa', 'Liwale', 'Nachingwea', 'Ruangwa', 'Mtama'],
             'Ruvuma' => ['Songea Urban', 'Songea Rural', 'Mbinga', 'Namtumbo', 'Tunduru', 'Namtumbo'],
             'Iringa' => ['Iringa Urban', 'Iringa Rural', 'Kilolo', 'Mafinga', 'Mufindi'],
