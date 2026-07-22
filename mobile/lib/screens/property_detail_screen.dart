@@ -18,6 +18,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   Map<String, dynamic>? _property;
   bool _isLoading = true;
   int _currentImageIndex = 0;
+  List<Map<String, dynamic>> _recommended = [];
 
   @override
   void initState() {
@@ -32,9 +33,32 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
         _property = data['data'] as Map<String, dynamic>?;
         _isLoading = false;
       });
+      if (_property != null) {
+        _fetchRecommended();
+      }
     } catch (_) {
       setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _fetchRecommended() async {
+    try {
+      final region = _property!['region'] ?? '';
+      final categories = (_property!['categories'] as List<dynamic>?) ?? [];
+      final categoryId = categories.isNotEmpty ? categories[0]['id'] : null;
+      String endpoint = 'properties?per_page=5';
+      if (region.isNotEmpty) endpoint += '&region=${Uri.encodeComponent(region.toString())}';
+      if (categoryId != null) endpoint += '&category_id=$categoryId';
+      final data = await ApiService().get(endpoint);
+      final props = (data['data'] as List<dynamic>?) ?? [];
+      setState(() {
+        _recommended = props
+            .cast<Map<String, dynamic>>()
+            .where((p) => p['id'] != widget.propertyId)
+            .take(4)
+            .toList();
+      });
+    } catch (_) {}
   }
 
   String _formatPrice(dynamic price) {
