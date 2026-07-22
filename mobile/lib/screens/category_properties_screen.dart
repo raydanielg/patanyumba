@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/colors.dart';
 import '../services/api_service.dart';
+import 'property_detail_screen.dart';
 
 class CategoryPropertiesScreen extends StatefulWidget {
   final int categoryId;
