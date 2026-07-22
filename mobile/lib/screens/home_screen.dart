@@ -7,6 +7,7 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import 'categories_screen.dart';
 import 'category_properties_screen.dart';
+import 'notifications_screen.dart';
 import 'property_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
