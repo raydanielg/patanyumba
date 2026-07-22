@@ -285,29 +285,47 @@ class _HomePageState extends State<_HomePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: 0.72,
+                  if (_featuredProperties.isNotEmpty)
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 0.72,
+                      ),
+                      itemCount: _featuredProperties.length,
+                      itemBuilder: (context, index) {
+                        final p = _featuredProperties[index];
+                        final images = p['images'] as List<dynamic>?;
+                        final imageUrl = images != null && images.isNotEmpty
+                            ? images[0]['url'] ?? images[0]['image_url']
+                            : null;
+                        final title = p['title'] ?? 'Untitled';
+                        final location = '${p['region'] ?? ''}, ${p['district'] ?? ''}';
+                        final price = p['price'];
+                        final listingType = p['listing_type'] ?? 'single';
+                        return _buildPropertyCard(
+                          title,
+                          location,
+                          imageUrl,
+                          price,
+                          listingType,
+                          p['id'] as int,
+                        );
+                      },
+                    )
+                  else
+                    SizedBox(
+                      height: 200,
+                      child: Center(
+                        child: Text(
+                          'No properties available',
+                          style: TextStyle(fontSize: 14, color: AppColors.textHint),
+                        ),
+                      ),
                     ),
-                    itemCount: 6,
-                    itemBuilder: (context, index) {
-                      final properties = [
-                        {'title': 'Modern Apartment', 'location': 'Kinondoni, DSM'},
-                        {'title': 'Family House', 'location': 'Kigamboni, DSM'},
-                        {'title': 'Studio Flat', 'location': 'Ilala, DSM'},
-                        {'title': 'Commercial Space', 'location': 'Ubungo, DSM'},
-                        {'title': '3 Bedroom House', 'location': 'Mbezi, DSM'},
-                        {'title': 'Penthouse', 'location': 'Masaki, DSM'},
-                      ];
-                      final p = properties[index];
-                      return _buildPropertyCard(p['title']!, p['location']!);
-                    },
-                  ),
                   const SizedBox(height: 24),
                 ],
               ),
