@@ -255,47 +255,33 @@ function isOn($all, $key) { return ($all[$key] ?? 'false') === 'true'; }
     {{-- =================== HERO IMAGES TAB =================== --}}
     <div id="tab-hero" class="tab-content hidden">
         <div class="space-y-4">
-            @for($i = 1; $i <= 5; $i++)
+            {{-- Enable/Disable toggle --}}
             <div class="bg-white rounded-xl border p-5">
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h3 class="text-sm font-bold text-gray-900">Hero Slide {{ $i }}</h3>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="md:col-span-1">
-                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Image</label>
-                        <div id="heroPreview{{ $i }}" class="relative rounded-lg overflow-hidden border h-32 bg-gray-100 mb-2 @if(!sv($all, "hero_image_$i")) hidden @endif">
-                            <img id="heroImg{{ $i }}" src="{{ sv($all, "hero_image_$i") }}" class="w-full h-full object-cover" alt="Hero {{ $i }}">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         </div>
-                        <div id="heroPlaceholder{{ $i }}" class="rounded-lg border-2 border-dashed border-gray-300 h-32 flex items-center justify-center mb-2 @if(sv($all, "hero_image_$i")) hidden @endif">
-                            <div class="text-center">
-                                <svg class="w-8 h-8 text-gray-400 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <p class="text-[10px] text-gray-400">No image</p>
-                            </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">Show Hero Carousel</p>
+                            <p class="text-xs text-gray-500">Enable/disable hero slides on mobile app</p>
                         </div>
-                        <input type="file" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="uploadHero({{ $i }}, this)" class="hidden" id="heroFile{{ $i }}">
-                        <div class="flex gap-2">
-                            <button type="button" onclick="document.getElementById('heroFile{{ $i }}').click()" class="flex-1 px-3 py-2 text-xs font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-1.5 transition-all">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                                Upload
-                            </button>
-                            <button type="button" onclick="removeHero({{ $i }})" id="heroRemoveBtn{{ $i }}" class="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-all @if(!sv($all, "hero_image_$i")) hidden @endif">Remove</button>
-                        </div>
-                        <p id="heroUploading{{ $i }}" class="text-[10px] text-emerald-600 mt-1 hidden">Uploading...</p>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Title</label>
-                        <input type="text" data-key="hero_title_{{ $i }}" value="{{ sv($all, "hero_title_$i") }}" class="setting-input w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Subtitle</label>
-                        <input type="text" data-key="hero_subtitle_{{ $i }}" value="{{ sv($all, "hero_subtitle_$i") }}" class="setting-input w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
-                    </div>
+                    <button onclick="toggleSetting('hero_enabled', this)" data-key="hero_enabled" class="toggle-switch relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 {{ isOn($all, 'hero_enabled') ? 'bg-emerald-500' : 'bg-gray-300' }}">
+                        <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform {{ isOn($all, 'hero_enabled') ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                    </button>
                 </div>
             </div>
-            @endfor
+
+            {{-- Dynamic slides container --}}
+            <div id="heroSlidesContainer" class="space-y-4"></div>
+
+            {{-- Add new slide button --}}
+            <button type="button" onclick="addHeroSlide()" id="addSlideBtn" class="w-full py-3 text-sm font-bold text-emerald-600 bg-emerald-50 rounded-xl hover:bg-emerald-100 flex items-center justify-center gap-2 transition-all border-2 border-dashed border-emerald-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                Add New Slide
+            </button>
+
             @include('admin.settings._save_btn')
         </div>
     </div>
