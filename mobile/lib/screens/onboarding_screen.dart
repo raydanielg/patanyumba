@@ -17,7 +17,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<_OnboardingPage> _pages = const [
     _OnboardingPage(
-      iconPath: 'assets/logo/whitelogo.png',
+      iconPath: 'assets/logotrans.png',
       title: 'Welcome to Patanyumba',
       description:
           'Your trusted companion for finding the perfect home. Browse thousands of verified property listings anytime, anywhere.',
