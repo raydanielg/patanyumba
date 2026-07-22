@@ -75,17 +75,43 @@ $fmt = fn($n) => $n >= 1000000000 ? number_format($n/1000000000,2).'B' : ($n >= 
                 <p class="text-xs text-gray-400">Last 14 days</p>
             </div>
         </div>
-        @php $revMax = max($dailyRevenue) ?: 1; @endphp
-        <div class="flex items-end gap-[4px] h-44">
-            @foreach($dailyRevenue as $i => $rev)
-            @php $pct = min(100, ((float)$rev / $revMax) * 100); $isToday = $i === count($dailyRevenue)-1; @endphp
-            <div class="flex-1 flex flex-col items-center gap-1 group cursor-pointer" title="{{ $dailyLabels[$i] }}: TZS {{ number_format($rev) }}">
-                <div class="w-full bg-gray-50 rounded-t-md relative h-36 overflow-hidden">
-                    <div class="absolute bottom-0 left-0 right-0 rounded-t-md transition-all duration-300 {{ $isToday ? 'bg-emerald-500' : 'bg-emerald-300 hover:bg-emerald-400' }}" style="height: {{ max($pct, 3) }}%"></div>
-                </div>
-                <span class="text-[9px] text-gray-400 font-medium">{{ \Carbon\Carbon::parse('now')->subDays(13-$i)->format('d') }}</span>
+        @php
+        $revMax = max($dailyRevenue) ?: 1;
+        $revMin = min($dailyRevenue);
+        $chartW = 100;
+        $chartH = 100;
+        $points = [];
+        foreach ($dailyRevenue as $i => $rev) {
+            $x = $chartW / (count($dailyRevenue) - 1) * $i;
+            $y = $chartH - ((float)$rev / $revMax) * $chartH;
+            $points[] = [$x, $y];
+        }
+        $linePath = collect($points)->map(fn($p) => round($p[0],2).','.round($p[1],2))->implode(' ');
+        $areaPath = '0,'.$chartH.' '.$linePath.' '.$chartW.','.$chartH;
+        @endphp
+        <div class="relative">
+            <svg viewBox="0 0 {{ $chartW }} {{ $chartH+10 }}" preserveAspectRatio="none" class="w-full h-44 overflow-visible">
+                <defs>
+                    <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/>
+                        <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+                <polygon points="{{ $areaPath }}" fill="url(#revGradient)" />
+                <polyline points="{{ $linePath }}" fill="none" stroke="#10b981" stroke-width="0.8" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+                @foreach($points as $i => $p)
+                <circle cx="{{ round($p[0],2) }}" cy="{{ round($p[1],2) }}" r="0.8" fill="#10b981" vector-effect="non-scaling-stroke" class="hover:r-1.5 transition-all">
+                    <title>{{ $dailyLabels[$i] }}: TZS {{ number_format($dailyRevenue[$i]) }}</title>
+                </circle>
+                @endforeach
+            </svg>
+            <div class="flex justify-between mt-2 px-0.5">
+                @foreach($dailyLabels as $i => $label)
+                @if($i % 2 === 0)
+                <span class="text-[9px] text-gray-400 font-medium">{{ \Carbon\Carbon::parse('now')->subDays(13-$i)->format('d M') }}</span>
+                @endif
+                @endforeach
             </div>
-            @endforeach
         </div>
     </div>
 
