@@ -40,15 +40,6 @@ kotlin {
     }
 }
 
-// Disable Kotlin incremental compilation to fix cross-drive (C: vs F:) cache issues
-subprojects {
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-Xskip-metadata-version-check")
-        }
-    }
-}
-
 flutter {
     source = "../.."
 }
