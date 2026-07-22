@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Property;
+use App\Models\PropertyCall;
 use App\Models\PropertyUnit;
 use Illuminate\Http\Request;
 
