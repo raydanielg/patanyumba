@@ -53,8 +53,67 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _HomePage extends StatelessWidget {
+class _HomePage extends StatefulWidget {
   const _HomePage();
+
+  @override
+  State<_HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<_HomePage> {
+  final PageController _heroController = PageController();
+  int _currentHeroPage = 0;
+  late Timer _heroTimer;
+
+  final List<Map<String, dynamic>> _heroSlides = [
+    {
+      'image': 'assets/images/hero1.jpg',
+      'title': 'Find Your Perfect Home',
+      'subtitle': 'Browse thousands of verified listings',
+    },
+    {
+      'image': 'assets/images/hero2.jpg',
+      'title': 'Verified Properties',
+      'subtitle': 'Every listing is checked and trusted',
+    },
+    {
+      'image': 'assets/images/hero3.jpg',
+      'title': 'Rent with Confidence',
+      'subtitle': 'From apartments to houses, we have it all',
+    },
+    {
+      'image': 'assets/images/hero4.jpg',
+      'title': 'Move In Faster',
+      'subtitle': 'Connect directly with landlords',
+    },
+    {
+      'image': 'assets/images/hero5.jpg',
+      'title': 'Your Dream Home Awaits',
+      'subtitle': 'Start your search today',
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _heroTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+      if (_heroController.hasClients) {
+        int next = (_currentHeroPage + 1) % _heroSlides.length;
+        _heroController.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _heroTimer.cancel();
+    _heroController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,231 +135,314 @@ class _HomePage extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Welcome card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.darkTealGreen, AppColors.tealGreen],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.tealGreen.withValues(alpha: 0.2),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
+            // Hero Carousel
+            _buildHeroCarousel(),
+            const SizedBox(height: 24),
+            // Categories
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Find Your Perfect Home',
+                    'Categories',
                     style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppConstants.tagline,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.lightGreen300,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search, size: 20),
-                    label: const Text('Start Searching'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.lightGreen,
-                      foregroundColor: AppColors.darkTealGreen,
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 1.5,
+                    children: [
+                      _buildCategoryCard(
+                        Icons.home_work_outlined,
+                        'Houses',
+                        'For Rent',
+                      ),
+                      _buildCategoryCard(
+                        Icons.apartment_outlined,
+                        'Apartments',
+                        'For Rent',
+                      ),
+                      _buildCategoryCard(
+                        Icons.bed_outlined,
+                        'Rooms',
+                        'For Rent',
+                      ),
+                      _buildCategoryCard(
+                        Icons.store_outlined,
+                        'Commercial',
+                        'For Rent',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  // Featured
+                  const Text(
+                    'Featured Listings',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
                     ),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Categories
-            const Text(
-              'Categories',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.5,
-              children: [
-                _buildCategoryCard(
-                  Icons.home_work_outlined,
-                  'Houses',
-                  'For Rent',
-                ),
-                _buildCategoryCard(
-                  Icons.apartment_outlined,
-                  'Apartments',
-                  'For Rent',
-                ),
-                _buildCategoryCard(
-                  Icons.bed_outlined,
-                  'Rooms',
-                  'For Rent',
-                ),
-                _buildCategoryCard(
-                  Icons.store_outlined,
-                  'Commercial',
-                  'For Rent',
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            // Featured
-            const Text(
-              'Featured Listings',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 280,
-                    margin: const EdgeInsets.only(right: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.06),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 120,
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 280,
+                          margin: const EdgeInsets.only(right: 12),
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.tealGreen100,
-                                AppColors.tealGreen200,
-                              ],
-                            ),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.home_outlined,
-                              size: 48,
-                              color: AppColors.tealGreen,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Beautiful Property',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Icon(Icons.location_on_outlined,
-                                      size: 14, color: AppColors.textHint),
-                                  const SizedBox(width: 4),
-                                  const Text(
-                                    'Dar es Salaam',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'TSh 450,000/mo',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: AppColors.tealGreen,
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.lightGreen
-                                          .withValues(alpha: 0.15),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: const Text(
-                                      'For Rent',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.lightGreen600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.06),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(16),
+                                  ),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.tealGreen100,
+                                      AppColors.tealGreen200,
+                                    ],
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.home_outlined,
+                                    size: 48,
+                                    color: AppColors.tealGreen,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Beautiful Property',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.location_on_outlined,
+                                            size: 14, color: AppColors.textHint),
+                                        const SizedBox(width: 4),
+                                        const Text(
+                                          'Dar es Salaam',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: AppColors.textSecondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'TSh 450,000/mo',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w800,
+                                            color: AppColors.tealGreen,
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.lightGreen
+                                                .withValues(alpha: 0.15),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: const Text(
+                                            'For Rent',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppColors.lightGreen600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeroCarousel() {
+    return SizedBox(
+      height: 220,
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: _heroController,
+            itemCount: _heroSlides.length,
+            onPageChanged: (index) => setState(() => _currentHeroPage = index),
+            itemBuilder: (context, index) {
+              final slide = _heroSlides[index];
+              return Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.darkTealGreen,
+                      AppColors.tealGreen.withValues(alpha: 0.8),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    // Background image with overlay
+                    Positioned.fill(
+                      child: Image.asset(
+                        slide['image'] as String,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.darkTealGreen,
+                                  AppColors.tealGreen,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    // Dark overlay for text readability
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.black.withValues(alpha: 0.5),
+                              Colors.black.withValues(alpha: 0.2),
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Text content
+                    Positioned(
+                      left: 20,
+                      bottom: 24,
+                      right: 20,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            slide['title'] as String,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              height: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            slide['subtitle'] as String,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.white.withValues(alpha: 0.85),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          // Dots indicator
+          Positioned(
+            bottom: 8,
+            right: 0,
+            left: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                _heroSlides.length,
+                (index) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: _currentHeroPage == index ? 20 : 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: _currentHeroPage == index
+                        ? Colors.white
+                        : Colors.white.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
