@@ -306,6 +306,15 @@ class _HomePageState extends State<_HomePage> {
   }
 
   Widget _buildHeroCarousel() {
+    if (_heroLoading) {
+      return SizedBox(
+        height: 220,
+        child: Center(
+          child: CircularProgressIndicator(color: AppColors.tealGreen),
+        ),
+      );
+    }
+
     return SizedBox(
       height: 220,
       child: Stack(
@@ -316,6 +325,7 @@ class _HomePageState extends State<_HomePage> {
             onPageChanged: (index) => setState(() => _currentHeroPage = index),
             itemBuilder: (context, index) {
               final slide = _heroSlides[index];
+              final imageUrl = slide['image'] as String?;
               return Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -330,27 +340,49 @@ class _HomePageState extends State<_HomePage> {
                 ),
                 child: Stack(
                   children: [
-                    // Background image with overlay
-                    Positioned.fill(
-                      child: Image.asset(
-                        slide['image'] as String,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.darkTealGreen,
-                                  AppColors.tealGreen,
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
+                    // Background image (from API URL or fallback gradient)
+                    if (imageUrl != null && imageUrl.isNotEmpty)
+                      Positioned.fill(
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.darkTealGreen,
+                                    AppColors.tealGreen,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white.withValues(alpha: 0.5),
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.darkTealGreen,
+                                    AppColors.tealGreen,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    ),
                     // Dark overlay for text readability
                     Positioned.fill(
                       child: Container(
@@ -376,7 +408,7 @@ class _HomePageState extends State<_HomePage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            slide['title'] as String,
+                            slide['title'] as String? ?? 'Find Your Perfect Home',
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
@@ -386,7 +418,7 @@ class _HomePageState extends State<_HomePage> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            slide['subtitle'] as String,
+                            slide['subtitle'] as String? ?? '',
                             style: TextStyle(
                               fontSize: 13,
                               color: Colors.white.withValues(alpha: 0.85),
