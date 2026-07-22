@@ -60,12 +60,18 @@ class _HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('assets/logo/whitelogo.png', width: 28, height: 28),
-            const SizedBox(width: 8),
-            const Text(AppConstants.appName),
+            Image.asset('assets/logo/whitelogo.png', width: 32, height: 32),
+            const SizedBox(width: 10),
+            const Text(
+              AppConstants.appName,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ],
         ),
       ),
