@@ -25,13 +25,13 @@ class AuthService {
     return false;
   }
 
-  Future<bool> register(String name, String email, String password, {String? phone}) async {
+  Future<bool> register(String name, String email, String password, {required String phone}) async {
     final data = await _api.post('auth/register', body: {
       'name': name,
       'email': email,
       'password': password,
       'password_confirmation': password,
-      if (phone != null) 'phone': phone,
+      'phone': phone,
     });
 
     if (data['success'] == true) {
