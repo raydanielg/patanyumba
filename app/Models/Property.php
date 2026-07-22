@@ -8,6 +8,8 @@ class Property extends Model
 {
     protected $fillable = [
         'user_id', 'title', 'description', 'property_type', 'price', 'currency',
+        'contact_phone', 'listing_type', 'total_units',
+        'rental_period', 'price_min', 'price_max',
         'region', 'district', 'ward', 'street', 'exact_location',
         'latitude', 'longitude', 'bedrooms', 'bathrooms', 'area_sqm',
         'is_furnished', 'is_available', 'status', 'is_featured', 'is_sponsored',
@@ -16,6 +18,8 @@ class Property extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'price_min' => 'decimal:2',
+        'price_max' => 'decimal:2',
         'is_furnished' => 'boolean',
         'is_available' => 'boolean',
         'is_featured' => 'boolean',
