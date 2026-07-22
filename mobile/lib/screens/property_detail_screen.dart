@@ -783,36 +783,26 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 ),
               const SizedBox(height: 24),
               if (phone.isNotEmpty) ...[
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildCallOption(
-                        context: context,
-                        icon: Icons.phone_in_talk,
-                        title: 'Call Online',
-                        subtitle: 'Call through the app',
-                        color: AppColors.tealGreen,
-                        onTap: () {
-                          Navigator.pop(context);
-                          _startOnlineCall(context, phone, owner);
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildCallOption(
-                        context: context,
-                        icon: Icons.dialer_sip,
-                        title: 'Call Offline',
-                        subtitle: 'Use phone dialer',
-                        color: const Color(0xFF2196F3),
-                        onTap: () {
-                          Navigator.pop(context);
-                          _startOfflineCall(context, phone);
-                        },
-                      ),
-                    ),
-                  ],
+                _buildCallListItem(
+                  icon: Icons.phone_in_talk,
+                  title: 'Call Online',
+                  subtitle: 'Call through the app (logged)',
+                  color: AppColors.tealGreen,
+                  onTap: () {
+                    Navigator.pop(context);
+                    _startOnlineCall(context, phone, owner);
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildCallListItem(
+                  icon: Icons.dialer_sip,
+                  title: 'Call Offline',
+                  subtitle: 'Use phone dialer',
+                  color: const Color(0xFF2196F3),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _startOfflineCall(context, phone);
+                  },
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -843,53 +833,63 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     );
   }
 
-  Widget _buildCallOption({
-    required BuildContext context,
+  Widget _buildCallListItem({
     required IconData icon,
     required String title,
     required String subtitle,
     required Color color,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
-        ),
-        child: Column(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.06),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: color.withValues(alpha: 0.15), width: 1),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: Colors.white, size: 22),
               ),
-              child: Icon(icon, color: Colors.white, size: 22),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: GoogleFonts.nunito(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: color,
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.nunito(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.nunito(
+                        fontSize: 11,
+                        color: AppColors.textHint,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.nunito(
-                fontSize: 10,
-                color: AppColors.textHint,
-              ),
-            ),
-          ],
+              Icon(Icons.chevron_right, color: color, size: 24),
+            ],
+          ),
         ),
       ),
     );
