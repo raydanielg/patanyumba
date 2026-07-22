@@ -19,6 +19,8 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   bool _isLoading = true;
   int _currentImageIndex = 0;
   List<Map<String, dynamic>> _recommended = [];
+  bool _isFavorited = false;
+  bool _isFavLoading = false;
 
   @override
   void initState() {
@@ -35,10 +37,31 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       });
       if (_property != null) {
         _fetchRecommended();
+        _checkFavorite();
       }
     } catch (_) {
       setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _checkFavorite() async {
+    try {
+      final data = await ApiService().get('favorites/check/${widget.propertyId}');
+      setState(() => _isFavorited = data['is_favorited'] == true);
+    } catch (_) {}
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (_isFavLoading) return;
+    setState(() => _isFavLoading = true);
+    final wasFavorited = _isFavorited;
+    setState(() => _isFavorited = !wasFavorited);
+    try {
+      await ApiService().post('favorites/toggle', body: {'property_id': widget.propertyId});
+    } catch (_) {
+      setState(() => _isFavorited = wasFavorited);
+    }
+    setState(() => _isFavLoading = false);
   }
 
   Future<void> _fetchRecommended() async {
