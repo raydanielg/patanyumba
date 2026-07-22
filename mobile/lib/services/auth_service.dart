@@ -25,14 +25,34 @@ class AuthService {
     return false;
   }
 
-  Future<bool> register(String name, String email, String password, {required String phone}) async {
-    final data = await _api.post('auth/register', body: {
+  Future<bool> register(
+    String name,
+    String email,
+    String password, {
+    required String phone,
+    String role = 'tenant',
+    String? businessName,
+    String? region,
+    String? district,
+    String? address,
+  }) async {
+    final body = {
       'name': name,
       'email': email,
       'password': password,
       'password_confirmation': password,
       'phone': phone,
-    });
+    };
+
+    if (role != 'tenant') {
+      body['role'] = role;
+      if (businessName != null) body['business_name'] = businessName;
+      if (region != null) body['region'] = region;
+      if (district != null) body['district'] = district;
+      if (address != null) body['address'] = address;
+    }
+
+    final data = await _api.post('auth/register', body: body);
 
     if (data['success'] == true) {
       final token = data['token'] as String;
