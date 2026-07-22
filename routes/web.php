@@ -32,7 +32,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.role');
 
     Route::get('/properties', [PropertyController::class, 'index'])->name('properties');
+    Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');
     Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+    Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
+    Route::post('/properties/bulk-delete', [PropertyController::class, 'bulkDestroy'])->name('properties.bulk-delete');
     Route::post('/properties/{property}/approve', [PropertyController::class, 'approve'])->name('properties.approve');
     Route::post('/properties/{property}/reject', [PropertyController::class, 'reject'])->name('properties.reject');
     Route::post('/properties/{property}/toggle-featured', [PropertyController::class, 'toggleFeatured'])->name('properties.toggle-featured');
