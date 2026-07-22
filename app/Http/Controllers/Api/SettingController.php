@@ -11,21 +11,31 @@ class SettingController extends Controller
     {
         $settings = Setting::where('group', 'hero')->get()->keyBy('key');
 
+        $enabled = ($settings->get('hero_enabled')?->value ?? 'true') === 'true';
+
         $slides = [];
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $image = $settings->get("hero_image_$i")?->value;
-            if ($image) {
+            $title = $settings->get("hero_title_$i")?->value;
+            $subtitle = $settings->get("hero_subtitle_$i")?->value;
+            $buttonText = $settings->get("hero_button_text_$i")?->value;
+            $buttonLink = $settings->get("hero_button_link_$i")?->value;
+
+            if ($image || $title || $subtitle) {
                 $slides[] = [
                     'id' => $i,
-                    'image' => url($image),
-                    'title' => $settings->get("hero_title_$i")?->value ?? 'Find Your Perfect Home',
-                    'subtitle' => $settings->get("hero_subtitle_$i")?->value ?? 'Browse thousands of verified listings',
+                    'image' => $image ? url($image) : null,
+                    'title' => $title ?? 'Find Your Perfect Home',
+                    'subtitle' => $subtitle ?? '',
+                    'button_text' => $buttonText ?? '',
+                    'button_link' => $buttonLink ?? '',
                 ];
             }
         }
 
         return response()->json([
             'success' => true,
+            'enabled' => $enabled,
             'data' => $slides,
         ]);
     }
