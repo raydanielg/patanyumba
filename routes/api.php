@@ -35,13 +35,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user/profile', [AuthController::class, 'updateProfile']);
     Route::put('/user/password', [AuthController::class, 'changePassword']);
 
-    // Properties
-    Route::get('/properties', [PropertyController::class, 'index']);
+    // Properties (authenticated actions)
     Route::post('/properties', [PropertyController::class, 'store']);
     Route::get('/properties/my', [PropertyController::class, 'myProperties']);
-    Route::get('/properties/{property}', [PropertyController::class, 'show']);
     Route::put('/properties/{property}', [PropertyController::class, 'update']);
     Route::delete('/properties/{property}', [PropertyController::class, 'destroy']);
+
+    // Property Calls
+    Route::post('/properties/{property}/call', [PropertyController::class, 'logCall']);
+    Route::put('/properties/{property}/call/{call}/end', [PropertyController::class, 'endCall']);
 
     // Property Units
     Route::get('/properties/{property}/units', [PropertyController::class, 'units']);
