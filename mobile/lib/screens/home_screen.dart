@@ -1634,7 +1634,7 @@ class _ProfilePageState extends State<_ProfilePage> {
             _buildMenuDivider(),
             _buildMenuTile(Icons.lock_outline, 'Change Password', 'Update your account password', () => _showChangePasswordModal()),
             _buildMenuDivider(),
-            _buildMenuTile(Icons.notifications_outlined, 'Notifications', 'Manage your notification settings', () {}),
+            _buildNotificationMenuTile(),
             _buildMenuDivider(),
             _buildMenuTile(Icons.help_outline, 'Help & Support', 'Get help and contact us', () {}),
             _buildMenuDivider(),
