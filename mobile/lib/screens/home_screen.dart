@@ -1703,6 +1703,83 @@ class _ProfilePageState extends State<_ProfilePage> {
     );
   }
 
+  Widget _buildNotificationMenuTile() {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+          );
+          _fetchUnreadCount();
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.tealGreen50,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.notifications_outlined, size: 18, color: AppColors.tealGreen),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Notifications',
+                      style: GoogleFonts.nunito(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _unreadCount > 0
+                          ? 'You have $_unreadCount unread notification${_unreadCount > 1 ? 's' : ''}'
+                          : 'View all your notifications',
+                      style: GoogleFonts.nunito(
+                        fontSize: 11,
+                        color: _unreadCount > 0 ? AppColors.tealGreen : AppColors.textHint,
+                        fontWeight: _unreadCount > 0 ? FontWeight.w600 : FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (_unreadCount > 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.error,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    _unreadCount > 99 ? '99+' : '$_unreadCount',
+                    style: GoogleFonts.nunito(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              else
+                const Icon(Icons.chevron_right, color: AppColors.textHint, size: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildLogoutButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
