@@ -208,7 +208,7 @@ class PropertySeeder extends Seeder
                 'user_id' => $landlord->id,
                 'title' => 'Multi-Unit Residential Building - Sinza',
                 'description' => 'Multi-unit residential building in Sinza with 6 self-contained units. Each unit has 1 bedroom, 1 bathroom, kitchen, and living area. Great investment property with steady rental income. All units currently occupied except 2.',
-                'property_type' => 'multi_unit',
+                'property_type' => 'apartment',
                 'listing_type' => 'multi_unit',
                 'price' => 180000,
                 'currency' => 'TZS',
