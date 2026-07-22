@@ -30,6 +30,10 @@ Route::get('/regions', [SettingController::class, 'regions']);
 Route::get('/faqs', [FaqController::class, 'index']);
 Route::get('/faqs/categories', [FaqController::class, 'categories']);
 
+// Public About
+Route::get('/about', [AboutController::class, 'index']);
+Route::get('/about/{section}', [AboutController::class, 'show']);
+
 // Public properties
 Route::get('/properties', [PropertyController::class, 'index']);
 Route::get('/properties/{property}', [PropertyController::class, 'show']);
