@@ -68,11 +68,13 @@ class _HomePageState extends State<_HomePage> {
   Timer? _heroTimer;
   List<Map<String, dynamic>> _heroSlides = [];
   bool _heroEnabled = true;
+  List<Map<String, dynamic>> _categories = [];
 
   @override
   void initState() {
     super.initState();
     _fetchHeroSlides();
+    _fetchCategories();
     _heroTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       if (_heroController.hasClients && _heroSlides.length > 1) {
         int next = (_currentHeroPage + 1) % _heroSlides.length;
@@ -103,6 +105,16 @@ class _HomePageState extends State<_HomePage> {
         _heroSlides = [];
       });
     }
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      final data = await ApiService().get('categories');
+      final cats = (data['data'] as List<dynamic>?) ?? [];
+      setState(() {
+        _categories = cats.cast<Map<String, dynamic>>();
+      });
+    } catch (_) {}
   }
 
   @override
