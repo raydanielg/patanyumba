@@ -55,6 +55,12 @@ class PropertyController extends Controller
             $query->where('is_furnished', filter_var($request->is_furnished, FILTER_VALIDATE_BOOLEAN));
         }
 
+        if ($request->filled('category_id')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('categories.id', $request->category_id);
+            });
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
