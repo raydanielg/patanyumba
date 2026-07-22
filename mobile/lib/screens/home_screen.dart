@@ -71,6 +71,7 @@ class _HomePageState extends State<_HomePage> {
   List<Map<String, dynamic>> _heroSlides = [];
   bool _heroEnabled = true;
   List<Map<String, dynamic>> _categories = [];
+  List<Map<String, dynamic>> _featuredProperties = [];
 
   @override
   void initState() {
