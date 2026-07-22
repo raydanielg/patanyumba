@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\SupportChatController;
 use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
