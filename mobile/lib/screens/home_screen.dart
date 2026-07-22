@@ -399,7 +399,7 @@ class _HomePageState extends State<_HomePage> {
                         ),
                       ),
                     ),
-                    // Text content
+                    // Text content + CTA button
                     Positioned(
                       left: 20,
                       bottom: 24,
@@ -426,6 +426,24 @@ class _HomePageState extends State<_HomePage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
+                          if ((slide['button_text'] as String? ?? '').isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                slide['button_text'] as String,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.tealGreen,
+                                ),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
