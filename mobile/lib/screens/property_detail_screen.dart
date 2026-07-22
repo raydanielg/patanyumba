@@ -1020,3 +1020,267 @@ class _VideoPlayerScreenState extends State<_VideoPlayerScreen> {
     );
   }
 }
+
+class _InAppCallScreen extends StatefulWidget {
+  final String phone;
+  final String ownerName;
+  final int propertyId;
+
+  const _InAppCallScreen({
+    required this.phone,
+    required this.ownerName,
+    required this.propertyId,
+  });
+
+  @override
+  State<_InAppCallScreen> createState() => _InAppCallScreenState();
+}
+
+class _InAppCallScreenState extends State<_InAppCallScreen> with TickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+  int _callSeconds = 0;
+  bool _isMuted = false;
+  bool _isSpeakerOn = true;
+  bool _isConnecting = true;
+  bool _callEnded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat(reverse: true);
+    _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() => _isConnecting = false);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  void _endCall() {
+    setState(() => _callEnded = true);
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) Navigator.pop(context);
+    });
+  }
+
+  String _formatDuration(int seconds) {
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0D1B2A),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            Text(
+              _callEnded ? 'Call Ended' : 'PataNyumba Call',
+              style: GoogleFonts.nunito(
+                fontSize: 14,
+                color: Colors.white54,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 60),
+            AnimatedBuilder(
+              animation: _pulseAnimation,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _isConnecting ? _pulseAnimation.value : 1.0,
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.tealGreen.withValues(alpha: 0.3),
+                          AppColors.tealGreen,
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.tealGreen.withValues(alpha: 0.3),
+                          blurRadius: 30,
+                          spreadRadius: 5,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.person, size: 56, color: Colors.white),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+            Text(
+              widget.ownerName,
+              style: GoogleFonts.nunito(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              widget.phone,
+              style: GoogleFonts.nunito(
+                fontSize: 16,
+                color: Colors.white54,
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (_callEnded)
+              Text(
+                _formatDuration(_callSeconds),
+                style: GoogleFonts.nunito(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.redAccent,
+                ),
+              )
+            else if (_isConnecting)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.tealGreen.withValues(alpha: 0.7),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Connecting...',
+                    style: GoogleFonts.nunito(
+                      fontSize: 16,
+                      color: Colors.white54,
+                    ),
+                  ),
+                ],
+              )
+            else
+              StreamBuilder<int>(
+                stream: Stream.periodic(const Duration(seconds: 1), (i) => i + 1),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    _callSeconds = snapshot.data!;
+                  }
+                  return Text(
+                    _formatDuration(_callSeconds),
+                    style: GoogleFonts.nunito(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
+                    ),
+                  );
+                },
+              ),
+            const Spacer(),
+            if (!_isConnecting && !_callEnded) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildCallControlButton(
+                      icon: _isMuted ? Icons.mic_off : Icons.mic,
+                      label: 'Mute',
+                      isActive: _isMuted,
+                      onTap: () => setState(() => _isMuted = !_isMuted),
+                    ),
+                    _buildCallControlButton(
+                      icon: _isSpeakerOn ? Icons.volume_up : Icons.volume_off,
+                      label: 'Speaker',
+                      isActive: _isSpeakerOn,
+                      onTap: () => setState(() => _isSpeakerOn = !_isSpeakerOn),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+            ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 50),
+              child: GestureDetector(
+                onTap: _endCall,
+                child: Container(
+                  width: 70,
+                  height: 70,
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.redAccent,
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: const Icon(Icons.call_end, color: Colors.white, size: 32),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCallControlButton({
+    required IconData icon,
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: isActive
+                  ? AppColors.tealGreen.withValues(alpha: 0.3)
+                  : Colors.white.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isActive ? AppColors.tealGreen : Colors.white24,
+                width: 1.5,
+              ),
+            ),
+            child: Icon(icon, color: Colors.white, size: 24),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: GoogleFonts.nunito(
+              fontSize: 11,
+              color: Colors.white54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
