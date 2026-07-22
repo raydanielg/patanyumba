@@ -45,15 +45,21 @@ class SettingSeeder extends Seeder
             ['key' => 'max_images_per_property', 'value' => '20', 'group' => 'features'],
 
             // Hero Images
-            ['key' => 'hero_image_1', 'value' => '/images/hero/hero1.jpg', 'group' => 'hero'],
+            ['key' => 'hero_image_1', 'value' => '', 'group' => 'hero'],
             ['key' => 'hero_title_1', 'value' => 'Find Your Dream Home', 'group' => 'hero'],
             ['key' => 'hero_subtitle_1', 'value' => 'Browse thousands of properties across Tanzania', 'group' => 'hero'],
-            ['key' => 'hero_image_2', 'value' => '/images/hero/hero2.jpg', 'group' => 'hero'],
+            ['key' => 'hero_image_2', 'value' => '', 'group' => 'hero'],
             ['key' => 'hero_title_2', 'value' => 'List Your Property', 'group' => 'hero'],
             ['key' => 'hero_subtitle_2', 'value' => 'Reach thousands of potential buyers and tenants', 'group' => 'hero'],
-            ['key' => 'hero_image_3', 'value' => '/images/hero/hero3.jpg', 'group' => 'hero'],
+            ['key' => 'hero_image_3', 'value' => '', 'group' => 'hero'],
             ['key' => 'hero_title_3', 'value' => 'Verified Agents', 'group' => 'hero'],
             ['key' => 'hero_subtitle_3', 'value' => 'Connect with trusted and verified real estate agents', 'group' => 'hero'],
+            ['key' => 'hero_image_4', 'value' => '', 'group' => 'hero'],
+            ['key' => 'hero_title_4', 'value' => 'Move In Faster', 'group' => 'hero'],
+            ['key' => 'hero_subtitle_4', 'value' => 'Connect directly with landlords', 'group' => 'hero'],
+            ['key' => 'hero_image_5', 'value' => '', 'group' => 'hero'],
+            ['key' => 'hero_title_5', 'value' => 'Your Dream Home Awaits', 'group' => 'hero'],
+            ['key' => 'hero_subtitle_5', 'value' => 'Start your search today', 'group' => 'hero'],
 
             // Announcements
             ['key' => 'announcement_enabled', 'value' => 'false', 'group' => 'announcements'],
