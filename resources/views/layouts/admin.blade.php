@@ -135,15 +135,22 @@
         {{-- Bottom User --}}
         <div class="p-4 border-t border-emerald-800/50">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-bold text-xs">
-                    {{ strtoupper(substr(Auth::user()->name ?? Auth::user()->email ?? 'A', 0, 1)) }}
-                </div>
+                <a href="{{ route('profile') }}" class="w-9 h-9 rounded-full overflow-hidden bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0 hover:ring-2 hover:ring-gold-400 transition-all">
+                    @if(Auth::user() && Auth::user()->avatar_url)
+                        <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                    @else
+                        {{ strtoupper(substr(Auth::user()->name ?? Auth::user()->email ?? 'A', 0, 1)) }}
+                    @endif
+                </a>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-white truncate">{{ Auth::user()->name ?? 'Admin User' }}</p>
-                    <p class="text-xs text-emerald-300/60">Administrator</p>
+                    <a href="{{ route('profile') }}" class="text-sm font-semibold text-white truncate block hover:text-gold-300 transition-colors">{{ Auth::user()->name ?? 'Admin User' }}</a>
+                    <p class="text-xs text-emerald-300/60 capitalize">{{ Auth::user()->role ?? 'Administrator' }}</p>
                 </div>
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('admin-logout').submit();" class="text-emerald-300/60 hover:text-white transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                <a href="{{ route('profile') }}" class="text-emerald-300/60 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5" title="My Profile">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </a>
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('admin-logout').submit();" class="text-emerald-300/60 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5" title="Logout">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 </a>
                 <form id="admin-logout" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
             </div>
