@@ -184,98 +184,109 @@ class _CategoryPropertiesScreenState extends State<CategoryPropertiesScreen> {
                           final imageUrl = images != null && images.isNotEmpty
                               ? images[0]['url'] ?? images[0]['image_url']
                               : null;
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.05),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                          final propertyId = p['id'] as int;
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => PropertyDetailScreen(propertyId: propertyId),
                                 ),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(14)),
-                                  child: imageUrl != null
-                                      ? Image.network(
-                                          imageUrl,
-                                          width: 100,
-                                          height: 100,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) => Container(
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(14)),
+                                    child: imageUrl != null
+                                        ? Image.network(
+                                            imageUrl,
+                                            width: 100,
+                                            height: 100,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) => Container(
+                                              width: 100,
+                                              height: 100,
+                                              color: AppColors.tealGreen50,
+                                              child: Icon(Icons.home_outlined, color: AppColors.tealGreen),
+                                            ),
+                                          )
+                                        : Container(
                                             width: 100,
                                             height: 100,
                                             color: AppColors.tealGreen50,
                                             child: Icon(Icons.home_outlined, color: AppColors.tealGreen),
                                           ),
-                                        )
-                                      : Container(
-                                          width: 100,
-                                          height: 100,
-                                          color: AppColors.tealGreen50,
-                                          child: Icon(Icons.home_outlined, color: AppColors.tealGreen),
-                                        ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          p['title'] ?? 'Untitled',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.nunito(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w700,
-                                            color: AppColors.textPrimary,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            p['title'] ?? 'Untitled',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.nunito(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppColors.textPrimary,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.location_on_outlined, size: 14, color: AppColors.textHint),
-                                            const SizedBox(width: 3),
-                                            Expanded(
-                                              child: Text(
-                                                '${p['region'] ?? ''}, ${p['district'] ?? ''}',
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.nunito(
-                                                  fontSize: 12,
-                                                  color: AppColors.textSecondary,
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.location_on_outlined, size: 14, color: AppColors.textHint),
+                                              const SizedBox(width: 3),
+                                              Expanded(
+                                                child: Text(
+                                                  '${p['region'] ?? ''}, ${p['district'] ?? ''}',
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.nunito(
+                                                    fontSize: 12,
+                                                    color: AppColors.textSecondary,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.tealGreen50,
-                                            borderRadius: BorderRadius.circular(6),
+                                            ],
                                           ),
-                                          child: Text(
-                                            _formatPrice(p['price']),
-                                            style: GoogleFonts.nunito(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppColors.tealGreen,
+                                          const SizedBox(height: 6),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.tealGreen50,
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              _formatPrice(p['price']),
+                                              style: GoogleFonts.nunito(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w700,
+                                                color: AppColors.tealGreen,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },
