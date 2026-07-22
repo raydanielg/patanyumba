@@ -232,7 +232,7 @@ class _HomePageState extends State<_HomePage> {
                     ),
                     const SizedBox(height: 14),
                     SizedBox(
-                      height: 90,
+                      height: 65,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: _categories.length,
@@ -491,34 +491,25 @@ class _HomePageState extends State<_HomePage> {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        width: 72,
-        margin: const EdgeInsets.only(right: 12),
+        width: 64,
+        margin: const EdgeInsets.only(right: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: AppColors.tealGreen50,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.tealGreen100,
-                  width: 1,
+            if (imageUrl != null && imageUrl.isNotEmpty)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  imageUrl,
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Icon(icon, size: 22, color: AppColors.tealGreen),
                 ),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: imageUrl != null && imageUrl.isNotEmpty
-                    ? Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(icon, size: 28, color: AppColors.tealGreen),
-                      )
-                    : Icon(icon, size: 28, color: AppColors.tealGreen),
-              ),
-            ),
-            const SizedBox(height: 6),
+              )
+            else
+              Icon(icon, size: 22, color: AppColors.tealGreen),
+            const SizedBox(height: 4),
             Text(
               name,
               maxLines: 1,
@@ -526,7 +517,7 @@ class _HomePageState extends State<_HomePage> {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 11,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 color: AppColors.textPrimary,
               ),
             ),
