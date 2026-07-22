@@ -10,11 +10,16 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PropertyImageController;
 use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\SettingController;
 use Illuminate\Support\Facades\Route;
 
 // Auth routes (public)
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+
+// Public settings
+Route::get('/hero-slides', [SettingController::class, 'heroSlides']);
+Route::get('/app-settings', [SettingController::class, 'appSettings']);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
