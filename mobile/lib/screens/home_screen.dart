@@ -1637,6 +1637,13 @@ class _ProfilePageState extends State<_ProfilePage> {
             _buildMenuDivider(),
             _buildNotificationMenuTile(),
             _buildMenuDivider(),
+            _buildMenuTile(Icons.settings_outlined, 'Settings', 'Theme, language, notifications & more', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            }),
+            _buildMenuDivider(),
             _buildMenuTile(Icons.help_outline, 'Help & Support', 'Get help and contact us', () {}),
             _buildMenuDivider(),
             _buildMenuTile(Icons.info_outline, 'About ${AppConstants.appName}', 'App version and information', () {}),
