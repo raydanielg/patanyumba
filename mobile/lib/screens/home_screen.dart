@@ -5,6 +5,7 @@ import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import 'about_screen.dart';
 import 'categories_screen.dart';
 import 'category_properties_screen.dart';
 import 'help_support_screen.dart';
