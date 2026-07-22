@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Models\Category;
+use App\Models\Property;
 
 class SettingController extends Controller
 {
@@ -75,6 +76,21 @@ class SettingController extends Controller
         return response()->json([
             'success' => true,
             'data' => $categories,
+        ]);
+    }
+
+    public function regions()
+    {
+        $regions = Property::where('status', 'approved')
+            ->whereNotNull('region')
+            ->where('region', '!=', '')
+            ->distinct()
+            ->orderBy('region')
+            ->pluck('region');
+
+        return response()->json([
+            'success' => true,
+            'data' => $regions,
         ]);
     }
 }

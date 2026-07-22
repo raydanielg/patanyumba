@@ -21,6 +21,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/hero-slides', [SettingController::class, 'heroSlides']);
 Route::get('/app-settings', [SettingController::class, 'appSettings']);
 Route::get('/categories', [SettingController::class, 'categories']);
+Route::get('/regions', [SettingController::class, 'regions']);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
