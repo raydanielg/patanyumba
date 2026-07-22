@@ -67,7 +67,6 @@ class _HomePageState extends State<_HomePage> {
   int _currentHeroPage = 0;
   Timer? _heroTimer;
   List<Map<String, dynamic>> _heroSlides = [];
-  bool _heroLoading = true;
   bool _heroEnabled = true;
 
   @override
@@ -97,13 +96,11 @@ class _HomePageState extends State<_HomePage> {
       setState(() {
         _heroEnabled = enabled && hasRealSlides;
         _heroSlides = hasRealSlides ? castSlides : [];
-        _heroLoading = false;
       });
     } catch (_) {
       setState(() {
         _heroEnabled = false;
         _heroSlides = [];
-        _heroLoading = false;
       });
     }
   }
