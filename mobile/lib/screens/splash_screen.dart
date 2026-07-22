@@ -86,14 +86,21 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(const Duration(seconds: 4), () async {
       if (!mounted) return;
 
-      final isLoggedIn = await AuthService().isLoggedIn();
-      final prefs = await SharedPreferences.getInstance();
-      final onboardingComplete = prefs.getBool(AppConstants.onboardingKey) ?? false;
+      bool loggedIn = false;
+      bool onboardingComplete = false;
+
+      try {
+        loggedIn = await AuthService().isLoggedIn();
+        final prefs = await SharedPreferences.getInstance();
+        onboardingComplete = prefs.getBool(AppConstants.onboardingKey) ?? false;
+      } catch (e) {
+        // If anything fails, default to login screen
+      }
 
       if (!mounted) return;
 
       Widget nextScreen;
-      if (isLoggedIn) {
+      if (loggedIn) {
         nextScreen = const HomeScreen();
       } else if (!onboardingComplete) {
         nextScreen = const OnboardingScreen();
