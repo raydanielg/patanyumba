@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             CategorySeeder::class,
             PropertySeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }
