@@ -1640,6 +1640,13 @@ class _ProfilePageState extends State<_ProfilePage> {
             _buildMenuDivider(),
             _buildNotificationMenuTile(),
             _buildMenuDivider(),
+            _buildMenuTile(Icons.real_estate_agent_outlined, 'Become a Landlord/Agent', 'List your properties on PataNyumba', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const BecomeLandlordScreen()),
+              );
+            }),
+            _buildMenuDivider(),
             _buildMenuTile(Icons.settings_outlined, 'Settings', 'Theme, language, notifications & more', () {
               Navigator.push(
                 context,
