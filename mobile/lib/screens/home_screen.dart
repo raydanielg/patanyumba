@@ -170,8 +170,8 @@ class _HomePageState extends State<_HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hero Carousel
-            _buildHeroCarousel(),
+            // Hero Carousel (hidden if disabled in settings)
+            if (_heroEnabled) _buildHeroCarousel(),
             const SizedBox(height: 16),
             // Search bar
             Padding(
