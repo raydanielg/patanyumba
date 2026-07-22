@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
+import '../services/auth_service.dart';
 import 'onboarding_screen.dart';
+import 'login_screen.dart';
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
