@@ -78,6 +78,11 @@ class AuthService {
     _api.setToken(token);
   }
 
+  Future<void> updateUser(Map<String, dynamic> user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppConstants.userKey, jsonEncode(user));
+  }
+
   Future<void> _clearSession() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(AppConstants.tokenKey);
