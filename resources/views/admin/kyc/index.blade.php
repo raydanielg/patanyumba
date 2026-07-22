@@ -457,6 +457,24 @@ async function reviewDocument(id) {
             document.getElementById('reviewDocStatus').textContent = doc.status;
             document.getElementById('reviewDocDate').textContent = new Date(doc.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
+            // Reviewed date
+            const reviewedRow = document.getElementById('reviewDocReviewedRow');
+            if (doc.reviewed_at) {
+                reviewedRow.classList.remove('hidden');
+                document.getElementById('reviewDocReviewed').textContent = new Date(doc.reviewed_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            } else {
+                reviewedRow.classList.add('hidden');
+            }
+
+            // Rejection reason
+            const rejectionBox = document.getElementById('reviewRejectionBox');
+            if (doc.status === 'rejected' && doc.rejection_reason) {
+                rejectionBox.classList.remove('hidden');
+                document.getElementById('reviewRejectionReason').textContent = doc.rejection_reason;
+            } else {
+                rejectionBox.classList.add('hidden');
+            }
+
             // Document viewer
             const viewer = document.getElementById('docViewer');
             const ext = doc.file_path.split('.').pop().toLowerCase();
