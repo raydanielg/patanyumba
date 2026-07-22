@@ -117,20 +117,20 @@ class _HomePageState extends State<_HomePage> {
   Future<void> _fetchHeroSlides() async {
     try {
       final data = await ApiService().get('hero-slides');
+      final enabled = data['enabled'] as bool? ?? true;
       final slides = (data['data'] as List<dynamic>?) ?? [];
-      if (slides.isNotEmpty) {
-        setState(() {
+      setState(() {
+        _heroEnabled = enabled;
+        if (enabled && slides.isNotEmpty) {
           _heroSlides = slides.cast<Map<String, dynamic>>();
-          _heroLoading = false;
-        });
-      } else {
-        setState(() {
+        } else if (enabled) {
           _heroSlides = _defaultSlides;
-          _heroLoading = false;
-        });
-      }
+        }
+        _heroLoading = false;
+      });
     } catch (_) {
       setState(() {
+        _heroEnabled = true;
         _heroSlides = _defaultSlides;
         _heroLoading = false;
       });
