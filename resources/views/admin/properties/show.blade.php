@@ -349,6 +349,57 @@
     </div>
 </div>
 
+{{-- Upload Media Modal --}}
+<div id="uploadModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] overflow-y-auto">
+        <div id="uploadModalGradient" class="bg-gradient-to-r from-emerald-600 to-emerald-800 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <div id="uploadModalIcon" class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                    <span id="uploadModalIconSvg"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white" id="uploadModalTitle">Add Image</h3>
+                    <p class="text-xs text-emerald-100/80">Upload media to this property</p>
+                </div>
+            </div>
+            <button onclick="closeUploadModal()" class="text-white/70 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <form id="uploadForm" class="p-6 space-y-4">
+            @csrf
+            <div id="imageUploadField">
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Select Image <span class="text-red-500">*</span></label>
+                <input type="file" id="imageFile" accept="image/jpeg,image/png,image/jpg,image/webp" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all">
+                <p class="text-[10px] text-gray-400 mt-1">Max 5MB. JPG, PNG, WebP.</p>
+            </div>
+            <div id="videoUploadField" style="display:none">
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Upload Video File</label>
+                <input type="file" id="videoFile" accept="video/mp4,video/mov,video/avi,video/webm" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all">
+                <p class="text-[10px] text-gray-400 mt-1">Max 50MB. MP4, MOV, AVI, WebM.</p>
+            </div>
+            <div id="videoUrlField" style="display:none">
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Or paste Video URL (YouTube/Vimeo/Direct)</label>
+                <input type="url" id="videoUrlInput" placeholder="https://..." class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all">
+                <p class="text-[10px] text-gray-400 mt-1">Paste a video URL if you don't want to upload a file.</p>
+            </div>
+            <div id="thumbnailField" style="display:none">
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Video Thumbnail (optional)</label>
+                <input type="file" id="thumbnailFile" accept="image/jpeg,image/png,image/jpg,image/webp" class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all">
+                <p class="text-[10px] text-gray-400 mt-1">Thumbnail image shown before video plays.</p>
+            </div>
+            <div id="uploadFormErrors" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 text-xs text-red-600"></div>
+            <div class="flex items-center gap-3 pt-2 border-t">
+                <button type="submit" id="uploadSubmitBtn" class="px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-emerald-600 to-emerald-800 rounded-lg hover:from-emerald-700 hover:to-emerald-900 flex items-center gap-2 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                    <span>Upload</span>
+                </button>
+                <button type="button" onclick="closeUploadModal()" class="px-6 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 const CSRF = '{{ csrf_token() }}';
 const PROPERTY_ID = {{ $property->id }};
