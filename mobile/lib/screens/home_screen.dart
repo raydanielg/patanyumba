@@ -125,8 +125,7 @@ class _HomePageState extends State<_HomePage> {
   Future<void> _fetchFeaturedProperties() async {
     try {
       final data = await ApiService().get('properties?per_page=6');
-      final raw = data['data'];
-      final props = (raw is List<dynamic>) ? raw : (raw['data'] as List<dynamic>?) ?? [];
+      final props = (data['data'] as List<dynamic>?) ?? [];
       setState(() {
         _featuredProperties = props.cast<Map<String, dynamic>>();
       });
